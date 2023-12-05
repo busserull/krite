@@ -20,6 +20,7 @@ defmodule KriteWeb.Router do
     get "/", PageController, :home
 
     resources "/kveg", KvegController
+    resources "/items", ItemController
   end
 
   # Other scopes may use custom stacks.
