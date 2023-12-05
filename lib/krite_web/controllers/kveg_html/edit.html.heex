@@ -1,0 +1,8 @@
+<.header>
+  Edit Kveg <%= @kveg.id %>
+  <:subtitle>Use this form to manage kveg records in your database.</:subtitle>
+</.header>
+
+<.kveg_form changeset={@changeset} action={~p"/kveg/#{@kveg}"} />
+
+<.back navigate={~p"/kveg"}>Back to kveg</.back>

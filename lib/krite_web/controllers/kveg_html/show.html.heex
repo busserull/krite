@@ -1,0 +1,21 @@
+<.header>
+  Kveg <%= @kveg.id %>
+  <:subtitle>This is a kveg record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/kveg/#{@kveg}/edit"}>
+      <.button>Edit kveg</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Active"><%= @kveg.active %></:item>
+  <:item title="Firstname"><%= @kveg.firstname %></:item>
+  <:item title="Lastname"><%= @kveg.lastname %></:item>
+  <:item title="Subtitle"><%= @kveg.subtitle %></:item>
+  <:item title="Email"><%= @kveg.email %></:item>
+  <:item title="Balance"><%= @kveg.balance %></:item>
+  <:item title="Sauna pass end"><%= @kveg.sauna_pass_end %></:item>
+</.list>
+
+<.back navigate={~p"/kveg"}>Back to kveg</.back>

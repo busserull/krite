@@ -1,0 +1,29 @@
+<.header>
+  Listing Kveg
+  <:actions>
+    <.link href={~p"/kveg/new"}>
+      <.button>New Kveg</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="kveg" rows={@kveg_collection} row_click={&JS.navigate(~p"/kveg/#{&1}")}>
+  <:col :let={kveg} label="Active"><%= kveg.active %></:col>
+  <:col :let={kveg} label="Firstname"><%= kveg.firstname %></:col>
+  <:col :let={kveg} label="Lastname"><%= kveg.lastname %></:col>
+  <:col :let={kveg} label="Subtitle"><%= kveg.subtitle %></:col>
+  <:col :let={kveg} label="Email"><%= kveg.email %></:col>
+  <:col :let={kveg} label="Balance"><%= kveg.balance %></:col>
+  <:col :let={kveg} label="Sauna pass end"><%= kveg.sauna_pass_end %></:col>
+  <:action :let={kveg}>
+    <div class="sr-only">
+      <.link navigate={~p"/kveg/#{kveg}"}>Show</.link>
+    </div>
+    <.link navigate={~p"/kveg/#{kveg}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={kveg}>
+    <.link href={~p"/kveg/#{kveg}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>

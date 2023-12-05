@@ -1,0 +1,15 @@
+<.simple_form :let={f} for={@changeset} action={@action}>
+  <.error :if={@changeset.action}>
+    Oops, something went wrong! Please check the errors below.
+  </.error>
+  <.input field={f[:active]} type="checkbox" label="Active" />
+  <.input field={f[:firstname]} type="text" label="Firstname" />
+  <.input field={f[:lastname]} type="text" label="Lastname" />
+  <.input field={f[:subtitle]} type="text" label="Subtitle" />
+  <.input field={f[:email]} type="text" label="Email" />
+  <.input field={f[:balance]} type="number" label="Balance" />
+  <.input field={f[:sauna_pass_end]} type="datetime-local" label="Sauna pass end" />
+  <:actions>
+    <.button>Save Kveg</.button>
+  </:actions>
+</.simple_form>
