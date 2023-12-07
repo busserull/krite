@@ -8,6 +8,26 @@ defmodule Krite.Accounts do
 
   alias Krite.Accounts.Kveg
 
+  defp calculate_and_put_balance(kveg) do
+    kveg = Repo.preload(kveg, [:deposits, purchases: [:items]])
+
+    deposits =
+      kveg
+      |> Map.fetch!(:deposits)
+      |> Enum.map(&Map.fetch!(&1, :amount))
+      |> Enum.sum()
+
+    spending =
+      kveg
+      |> Map.fetch!(:purchases)
+      |> Enum.map(&Map.fetch!(&1, :items))
+      |> List.flatten()
+      |> Enum.map(&(&1.unit_price_at_purchase * &1.count))
+      |> Enum.sum()
+
+    Map.put(kveg, :balance, deposits - spending)
+  end
+
   @doc """
   Returns the list of kveg.
 
@@ -35,7 +55,7 @@ defmodule Krite.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_kveg!(id), do: Repo.get!(Kveg, id)
+  def get_kveg!(id), do: Kveg |> Repo.get!(id) |> calculate_and_put_balance()
 
   @doc """
   Creates a kveg.
