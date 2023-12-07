@@ -21,6 +21,7 @@ defmodule KriteWeb.Router do
 
     resources "/kveg", KvegController
     resources "/items", ItemController
+    resources "/purchases", PurchaseController
   end
 
   # Other scopes may use custom stacks.

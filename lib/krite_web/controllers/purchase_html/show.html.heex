@@ -1,0 +1,14 @@
+<.header>
+  Purchase <%= @purchase.id %>
+  <:subtitle>This is a purchase record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/purchases/#{@purchase}/edit"}>
+      <.button>Edit purchase</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+</.list>
+
+<.back navigate={~p"/purchases"}>Back to purchases</.back>

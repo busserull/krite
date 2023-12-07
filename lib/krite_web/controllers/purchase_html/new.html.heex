@@ -1,0 +1,8 @@
+<.header>
+  New Purchase
+  <:subtitle>Use this form to manage purchase records in your database.</:subtitle>
+</.header>
+
+<.purchase_form changeset={@changeset} action={~p"/purchases"} />
+
+<.back navigate={~p"/purchases"}>Back to purchases</.back>
