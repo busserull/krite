@@ -12,7 +12,7 @@
 
 defmodule SeedUtil do
   alias Krite.Accounts.{Kveg, Deposit}
-  alias Krite.Products.Item
+  alias Krite.Products.{Item, Barcode}
   alias Krite.Purchases.{Purchase, PurchaseItem}
 
   def make_kveg({firstname, lastname, email}) do
@@ -35,17 +35,13 @@ defmodule SeedUtil do
     )
   end
 
-  def make_item({name, barcode, price}) do
-    barcode = if valid_ean_barcode?(barcode), do: barcode
+  def make_item({name, barcodes, price}) do
+    barcodes = Enum.map barcodes, &Barcode.changeset(%Barcode{}, %{code: &1})
 
-    Item.changeset(
-      %Item{},
-      %{
-        name: name,
-        barcode: barcode,
-        price: price
-      }
-    )
+    %Item{}
+    |> Item.changeset(%{name: name, price: price})
+    |> Ecto.Changeset.change()
+    |> Ecto.Changeset.put_assoc(:barcodes, barcodes)
   end
 
   def make_purchase({buyer, counts}, products) do
@@ -64,14 +60,6 @@ defmodule SeedUtil do
     |> Ecto.Changeset.change()
     |> Ecto.Changeset.put_assoc(:items, items)
   end
-
-  defp valid_ean_barcode?(barcode) do
-    with {_number, ""} <- Integer.parse(barcode) do
-      String.length(barcode) in [8, 13]
-    else
-      _ -> false
-    end
-  end
 end
 
 alias Krite.Repo
@@ -88,15 +76,11 @@ inserted_kveg =
 
 # Insert product items
 
-# GS1 codes
-# 701: Norway
-# 640: Finland
-# 440: East Germany
 inserted_products =
   [
-    {"Dybderus", "7012345678900", 21},
-    {"Long Eero", "6402345678901", 25},
-    {"Berlin Brew", "4402345678901", 12}
+    {"Dybderus", ["7012345678900", "7012345678905", "7012345678909"], 21},
+    {"Long Eero", ["6402345678901"], 25},
+    {"Berlin Brew", ["4402345678901"], 12}
   ]
   |> Enum.map(&SeedUtil.make_item/1)
   |> Enum.map(&Repo.insert!(&1, []))

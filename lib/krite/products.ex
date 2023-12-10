@@ -7,6 +7,7 @@ defmodule Krite.Products do
   alias Krite.Repo
 
   alias Krite.Products.Item
+  alias Krite.Products.Barcode
 
   @doc """
   Returns the list of items.
@@ -36,6 +37,22 @@ defmodule Krite.Products do
 
   """
   def get_item!(id), do: Repo.get!(Item, id)
+
+  @doc """
+  Return a single item by one of its registered barcodes.
+
+  ## Examples
+
+     iex> get_item_by_barcode("701234567890")
+     %Item{}
+
+     iex> get_item_by_barcode("bad barcode")
+     ** (Ecto.NoResultsError)
+  """
+  def get_item_by_barcode(code) do
+    barcode = Repo.one!(from b in Barcode, where: b.code == ^code)
+    get_item! barcode.item_id
+  end
 
   @doc """
   Creates a item.
