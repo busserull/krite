@@ -1,7 +1,9 @@
 defmodule Krite.Products.Item do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Krite.Products.Stock
   alias Krite.Products.Barcode
+  alias Krite.Purchases.PurchaseItem
 
   schema "items" do
     field :active, :boolean, default: true
@@ -9,6 +11,9 @@ defmodule Krite.Products.Item do
     field :price, :integer
 
     has_many :barcodes, Barcode
+
+    has_many :purchases, PurchaseItem
+    has_many :stocks, Stock
 
     timestamps(type: :utc_datetime)
   end

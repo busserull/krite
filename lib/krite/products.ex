@@ -8,6 +8,8 @@ defmodule Krite.Products do
 
   alias Krite.Products.Item
   alias Krite.Products.Barcode
+  alias Krite.Products.Stock
+  alias Krite.Purchases.PurchaseItem
 
   @doc """
   Returns the list of items.
@@ -51,7 +53,44 @@ defmodule Krite.Products do
   """
   def get_item_by_barcode(code) do
     barcode = Repo.one!(from b in Barcode, where: b.code == ^code)
-    get_item! barcode.item_id
+    get_item!(barcode.item_id)
+  end
+
+  @doc """
+  Calculate the projected stock for an item by subtracting purchases made
+  since its last stock count, from its last count.
+
+  ## Examples
+
+     iex> get_projected_stock(1)
+     23
+  """
+  def get_projected_stock(id) do
+    {stock, purchased_after_last_stock?} =
+      case Repo.all(from s in Stock, where: s.item_id == ^id) do
+        [] ->
+          {0, fn _ -> true end}
+
+        stocks ->
+          last = Enum.reduce(stocks, &last_updated/2)
+          count = Map.fetch!(last, :count)
+          IO.puts("--> #{inspect(last.updated_at)}")
+          filter = fn p -> DateTime.after?(p.purchase.updated_at, last.updated_at) end
+          {count, filter}
+      end
+
+    sold =
+      from(i in PurchaseItem, where: i.item_id == ^id, preload: [:purchase])
+      |> Repo.all()
+      |> Enum.filter(&purchased_after_last_stock?.(&1))
+      |> Enum.map(& &1.count)
+      |> Enum.sum()
+
+    stock - sold
+  end
+
+  defp last_updated(one, two) do
+    if DateTime.after?(one.updated_at, two.updated_at), do: one, else: two
   end
 
   @doc """

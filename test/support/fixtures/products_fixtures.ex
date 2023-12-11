@@ -20,4 +20,18 @@ defmodule Krite.ProductsFixtures do
 
     item
   end
+
+  @doc """
+  Generate a stock.
+  """
+  def stock_fixture(attrs \\ %{}) do
+    {:ok, stock} =
+      attrs
+      |> Enum.into(%{
+        count: 42
+      })
+      |> Krite.Products.create_stock()
+
+    stock
+  end
 end

@@ -12,7 +12,7 @@
 
 defmodule SeedUtil do
   alias Krite.Accounts.{Kveg, Deposit}
-  alias Krite.Products.{Item, Barcode}
+  alias Krite.Products.{Item, Barcode, Stock}
   alias Krite.Purchases.{Purchase, PurchaseItem}
 
   def make_kveg({firstname, lastname, email}) do
@@ -35,13 +35,27 @@ defmodule SeedUtil do
     )
   end
 
-  def make_item({name, barcodes, price}) do
-    barcodes = Enum.map barcodes, &Barcode.changeset(%Barcode{}, %{code: &1})
+  def make_item({name, barcodes, price, stock}) do
+    barcodes = Enum.map(barcodes, &Barcode.changeset(%Barcode{}, %{code: &1}))
+
+    ten_minutes_ago =
+      DateTime.utc_now() |> DateTime.add(-10, :minute) |> DateTime.truncate(:second)
+
+    stocks = [
+      Stock.changeset(
+        %Stock{
+          inserted_at: ten_minutes_ago,
+          updated_at: ten_minutes_ago
+        },
+        %{count: stock}
+      )
+    ]
 
     %Item{}
     |> Item.changeset(%{name: name, price: price})
     |> Ecto.Changeset.change()
     |> Ecto.Changeset.put_assoc(:barcodes, barcodes)
+    |> Ecto.Changeset.put_assoc(:stocks, stocks)
   end
 
   def make_purchase({buyer, counts}, products) do
@@ -64,6 +78,11 @@ end
 
 alias Krite.Repo
 
+# Wipe database
+["items", "kveg"]
+|> Enum.map(&"truncate #{&1} restart identity cascade")
+|> Enum.each(&Ecto.Adapters.SQL.query!(Krite.Repo, &1))
+
 # Insert kveg
 
 inserted_kveg =
@@ -78,9 +97,9 @@ inserted_kveg =
 
 inserted_products =
   [
-    {"Dybderus", ["7012345678900", "7012345678905", "7012345678909"], 21},
-    {"Long Eero", ["6402345678901"], 25},
-    {"Berlin Brew", ["4402345678901"], 12}
+    {"Dybderus", ["7012345678900", "7012345678905", "7012345678909"], 21, 50},
+    {"Long Eero", ["6402345678901"], 25, 25},
+    {"Berlin Brew", ["4402345678901"], 12, 300}
   ]
   |> Enum.map(&SeedUtil.make_item/1)
   |> Enum.map(&Repo.insert!(&1, []))
