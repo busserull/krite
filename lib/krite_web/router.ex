@@ -24,6 +24,9 @@ defmodule KriteWeb.Router do
     resources "/purchases", PurchaseController
   end
 
+  scope "/admin", KriteWeb do
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", KriteWeb do
   #   pipe_through :api
