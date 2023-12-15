@@ -1,6 +1,13 @@
 defmodule KriteWeb.Router do
   use KriteWeb, :router
 
+  import KriteWeb.AccountAuth,
+    only: [
+      fetch_current_account: 2,
+      require_authenticated_budeie: 2,
+      require_authenticated_kveg: 2
+    ]
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +15,7 @@ defmodule KriteWeb.Router do
     plug :put_root_layout, html: {KriteWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_account
   end
 
   pipeline :api do
@@ -20,11 +28,26 @@ defmodule KriteWeb.Router do
     get "/", PageController, :home
 
     resources "/kveg", KvegController
-    resources "/items", ItemController
     resources "/purchases", PurchaseController
   end
 
-  scope "/admin", KriteWeb do
+  scope "/budeie", KriteWeb do
+    pipe_through :browser
+
+    get "/log-in", BudeieController, :new
+    post "/log-in", BudeieController, :create
+    delete "/log-out", BudeieController, :delete
+  end
+
+  scope "/budeie", KriteWeb do
+    pipe_through [:browser, :require_authenticated_budeie]
+
+    get "/", BudeieController, :index
+
+    resources "/products", ProductController
+
+    get "/settings", BudeieController, :edit
+    put "/settings", BudeieController, :update
   end
 
   # Other scopes may use custom stacks.

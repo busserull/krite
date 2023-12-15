@@ -1,4 +1,4 @@
-defmodule KriteWeb.ItemController do
+defmodule KriteWeb.ProductController do
   use KriteWeb, :controller
 
   alias Krite.Products
@@ -6,7 +6,11 @@ defmodule KriteWeb.ItemController do
 
   def index(conn, _params) do
     items = Products.list_items()
-    render(conn, :index, items: items)
+    {active, inactive} = Enum.split_with(items, & &1.active)
+
+    inactive = [1]
+
+    render(conn, :index, active_items: active, inactive_items: inactive)
   end
 
   def new(conn, _params) do
@@ -18,7 +22,7 @@ defmodule KriteWeb.ItemController do
     case Products.create_item(item_params) do
       {:ok, item} ->
         conn
-        |> put_flash(:info, "Item created successfully.")
+        |> put_flash(:info, "Item created")
         |> redirect(to: ~p"/items/#{item}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
