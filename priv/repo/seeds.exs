@@ -77,18 +77,19 @@ defmodule SeedUtil do
 end
 
 alias Krite.Repo
+alias Krite.Accounts.Budeie
 
-# Wipe database
-["items", "kveg"]
-|> Enum.map(&"truncate #{&1} restart identity cascade")
-|> Enum.each(&Ecto.Adapters.SQL.query!(Krite.Repo, &1))
+# # Wipe database
+# ["items", "kveg_accounts", "budeie_accounts"]
+# |> Enum.map(&"truncate #{&1} restart identity cascade")
+# |> Enum.each(&Ecto.Adapters.SQL.query!(Krite.Repo, &1))
 
 # Insert kveg
 
 inserted_kveg =
   [
-    {"Jake", "Blues", "jake@example.com"},
-    {"Elwood", "Blues", "elwood@example.com"}
+    {"Alice", "Example", "alice@example.com"},
+    {"Bob", "Example", "bob@example.com"}
   ]
   |> Enum.map(&SeedUtil.make_kveg/1)
   |> Enum.map(&Repo.insert!(&1, []))
@@ -97,9 +98,9 @@ inserted_kveg =
 
 inserted_products =
   [
-    {"Dybderus", ["7012345678900", "7012345678905", "7012345678909"], 21, 50},
-    {"Long Eero", ["6402345678901"], 25, 25},
-    {"Berlin Brew", ["4402345678901"], 12, 300}
+    {"Liquid Water", ["7012345678900", "7012345678905", "7012345678909"], 21, 50},
+    {"Viscous Air", ["6402345678901"], 25, 25},
+    {"Brunder Brau", ["4402345678901"], 12, 300}
   ]
   |> Enum.map(&SeedUtil.make_item/1)
   |> Enum.map(&Repo.insert!(&1, []))
@@ -127,3 +128,8 @@ inserted_kveg
 |> Enum.zip(purchase_counts)
 |> Enum.map(&SeedUtil.make_purchase(&1, inserted_products))
 |> Enum.each(&Repo.insert!(&1, []))
+
+# Make budeie accounts
+%Budeie{}
+|> Budeie.changeset(%{email: "milk", password: "milkman"})
+|> Repo.insert!()

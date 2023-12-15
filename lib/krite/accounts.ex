@@ -5,27 +5,19 @@ defmodule Krite.Accounts do
 
   import Ecto.Query, warn: false
   alias Krite.Repo
-
   alias Krite.Accounts.Kveg
+  alias Krite.Accounts.Budeie
 
-  defp calculate_and_put_balance(kveg) do
-    kveg = Repo.preload(kveg, [:deposits, purchases: [:items]])
+  @doc """
+  Gets a single budeie.
 
-    deposits =
-      kveg
-      |> Map.fetch!(:deposits)
-      |> Enum.map(&Map.fetch!(&1, :amount))
-      |> Enum.sum()
+  Raises `Ecto.NoResultsError` if the Budeie does not exist.
+  """
+  def get_budeie!(id), do: Repo.get!(Budeie, id)
 
-    spending =
-      kveg
-      |> Map.fetch!(:purchases)
-      |> Enum.map(&Map.fetch!(&1, :items))
-      |> List.flatten()
-      |> Enum.map(&(&1.unit_price_at_purchase * &1.count))
-      |> Enum.sum()
-
-    Map.put(kveg, :balance, deposits - spending)
+  def get_budeie_by_email_and_password(email, password) do
+    budeie = Repo.get_by(Budeie, email: email)
+    if Budeie.valid_password?(budeie, password), do: budeie
   end
 
   @doc """
@@ -120,5 +112,25 @@ defmodule Krite.Accounts do
   """
   def change_kveg(%Kveg{} = kveg, attrs \\ %{}) do
     Kveg.changeset(kveg, attrs)
+  end
+
+  defp calculate_and_put_balance(kveg) do
+    kveg = Repo.preload(kveg, [:deposits, purchases: [:items]])
+
+    deposits =
+      kveg
+      |> Map.fetch!(:deposits)
+      |> Enum.map(&Map.fetch!(&1, :amount))
+      |> Enum.sum()
+
+    spending =
+      kveg
+      |> Map.fetch!(:purchases)
+      |> Enum.map(&Map.fetch!(&1, :items))
+      |> List.flatten()
+      |> Enum.map(&(&1.unit_price_at_purchase * &1.count))
+      |> Enum.sum()
+
+    Map.put(kveg, :balance, deposits - spending)
   end
 end

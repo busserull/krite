@@ -1,6 +1,6 @@
-# KriteSys v2
+# Krite
 
-KriteSys v2 is a web based system where users ("kveg") can log on, see their balance,
+Krite is a web based system where users ("kveg") can log on, see their balance,
 and purchase various products sold at Dypet.
 
 They can also pay for a sauna session, or buy a sauna season pass.
@@ -8,7 +8,7 @@ They can also pay for a sauna session, or buy a sauna season pass.
 Dypet administrators can log in, see available stock, update stock, and change prices.
 Automatic stock reports can also be generated and downloaded.
 
-# Krite
+# Running
 
 To start your Phoenix server:
 
