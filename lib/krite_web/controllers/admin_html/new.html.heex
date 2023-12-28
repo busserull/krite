@@ -1,0 +1,20 @@
+<div class="mx-auto max-w-sm">
+<.header class="text-center">
+You an admin? Sign in
+</.header>
+
+<.simple_form :let={f} for={@conn.params["admin"]} as={:admin} action={~p"/admin/log_in"}>
+<.error :if={@error_message}>
+  <%= @error_message %>
+</.error>
+
+<.input field={f[:email]} type="email" label="Email" required />
+<.input field={f[:password]} type="password" label="Password" required />
+
+<:actions>
+<.button phx-disable-with="Signing in..." class="w-full">
+Sign in
+</.button>
+</:actions>
+</.simple_form>
+</div>
