@@ -8,6 +8,13 @@ defmodule Krite.Accounts do
   alias Krite.Accounts.Kveg
   alias Krite.Accounts.Admin
 
+  @doc """
+  Gets a single admin.
+
+  Raises `Ecto.NoResultsError` if the Admin does not exist.
+  """
+  def get_admin!(id), do: Repo.get!(Admin, id)
+
   def get_admin_by_email_and_password(email, password) do
     admin = Repo.get_by(Admin, email: email)
     if Admin.valid_password?(admin, password), do: admin
