@@ -5,27 +5,12 @@ defmodule Krite.Accounts do
 
   import Ecto.Query, warn: false
   alias Krite.Repo
-
   alias Krite.Accounts.Kveg
+  alias Krite.Accounts.Admin
 
-  defp calculate_and_put_balance(kveg) do
-    kveg = Repo.preload(kveg, [:deposits, purchases: [:items]])
-
-    deposits =
-      kveg
-      |> Map.fetch!(:deposits)
-      |> Enum.map(&Map.fetch!(&1, :amount))
-      |> Enum.sum()
-
-    spending =
-      kveg
-      |> Map.fetch!(:purchases)
-      |> Enum.map(&Map.fetch!(&1, :items))
-      |> List.flatten()
-      |> Enum.map(&(&1.unit_price_at_purchase * &1.count))
-      |> Enum.sum()
-
-    Map.put(kveg, :balance, deposits - spending)
+  def get_admin_by_email_and_password(email, password) do
+    admin = Repo.get_by(Admin, email: email)
+    if Admin.valid_password?(admin, password), do: admin
   end
 
   @doc """
@@ -120,5 +105,25 @@ defmodule Krite.Accounts do
   """
   def change_kveg(%Kveg{} = kveg, attrs \\ %{}) do
     Kveg.changeset(kveg, attrs)
+  end
+
+  defp calculate_and_put_balance(kveg) do
+    kveg = Repo.preload(kveg, [:deposits, purchases: [:items]])
+
+    deposits =
+      kveg
+      |> Map.fetch!(:deposits)
+      |> Enum.map(&Map.fetch!(&1, :amount))
+      |> Enum.sum()
+
+    spending =
+      kveg
+      |> Map.fetch!(:purchases)
+      |> Enum.map(&Map.fetch!(&1, :items))
+      |> List.flatten()
+      |> Enum.map(&(&1.unit_price_at_purchase * &1.count))
+      |> Enum.sum()
+
+    Map.put(kveg, :balance, deposits - spending)
   end
 end

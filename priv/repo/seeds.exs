@@ -77,9 +77,10 @@ defmodule SeedUtil do
 end
 
 alias Krite.Repo
+alias Krite.Accounts.Admin
 
 # Wipe database
-["items", "kveg"]
+["items", "kveg", "admins"]
 |> Enum.map(&"truncate #{&1} restart identity cascade")
 |> Enum.each(&Ecto.Adapters.SQL.query!(Krite.Repo, &1))
 
@@ -127,3 +128,8 @@ inserted_kveg
 |> Enum.zip(purchase_counts)
 |> Enum.map(&SeedUtil.make_purchase(&1, inserted_products))
 |> Enum.each(&Repo.insert!(&1, []))
+
+# Make admins
+%Admin{}
+|> Admin.changeset(%{email: "me@example.com", password: "the milkman comes"})
+|> Repo.insert!()
