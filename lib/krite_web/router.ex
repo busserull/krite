@@ -1,7 +1,12 @@
 defmodule KriteWeb.Router do
   use KriteWeb, :router
 
-  import KriteWeb.AccountAuth, only: [fetch_current_account: 2]
+  import KriteWeb.AccountAuth,
+    only: [
+      fetch_current_account: 2,
+      require_authenticated_admin: 2,
+      require_authenticated_kveg: 2
+    ]
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -33,6 +38,13 @@ defmodule KriteWeb.Router do
     get "/log_in", AdminController, :new
     post "/log_in", AdminController, :create
     delete "/log_out", AdminController, :delete
+    # get "/settings", AdminController, :edit
+    # put "/settings", AdminController, :update
+  end
+
+  scope "/admin", KriteWeb do
+    pipe_through [:browser, :require_authenticated_admin]
+
     get "/settings", AdminController, :edit
     put "/settings", AdminController, :update
   end

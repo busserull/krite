@@ -26,6 +26,7 @@ defmodule KriteWeb.AccountAuth do
     |> clear_session()
     |> put_session(:admin_id, admin_id)
     |> redirect(to: ~p"/")
+
     # TODO: Return to admin start page
   end
 
@@ -75,4 +76,31 @@ defmodule KriteWeb.AccountAuth do
     end
   end
 
+  @doc """
+  Require that an admin is logged in, otherwise redirect and halt the connection.
+  """
+  def require_authenticated_admin(conn, _opts) do
+    if conn.assigns[:current_admin] do
+      conn
+    else
+      # TODO: Maybe remove this flash altogether
+      conn
+      |> put_flash(:error, "You must log in as an admin to access that page")
+      |> redirect(to: ~p"/admin/log_in")
+      |> halt()
+    end
+  end
+
+  @doc """
+  Require that a kveg is logged in, otherwise redirect and halt the connection.
+  """
+  def require_authenticated_kveg(conn, _opts) do
+    if conn.assigns[:current_kveg] do
+      conn
+    else
+      conn
+      |> redirect(to: ~p"/")
+      |> halt()
+    end
+  end
 end
