@@ -35,9 +35,9 @@ defmodule KriteWeb.Router do
   scope "/budeie", KriteWeb do
     pipe_through :browser
 
-    get "/log_in", BudeieController, :new
-    post "/log_in", BudeieController, :create
-    delete "/log_out", BudeieController, :delete
+    get "/log-in", BudeieController, :new
+    post "/log-in", BudeieController, :create
+    delete "/log-out", BudeieController, :delete
     # get "/settings", AdminController, :edit
     # put "/settings", AdminController, :update
   end

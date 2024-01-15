@@ -80,7 +80,7 @@ defmodule KriteWeb.AccountAuth do
       # TODO: Maybe remove this flash altogether
       conn
       |> put_flash(:error, "You must log in as a budeie to access that page")
-      |> redirect(to: ~p"/budeie/log_in")
+      |> redirect(to: ~p"/budeie/log-in")
       |> halt()
     end
   end

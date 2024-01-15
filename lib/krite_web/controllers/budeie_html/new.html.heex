@@ -3,7 +3,7 @@
 Are you a Budeie? Sign in
 </.header>
 
-<.simple_form :let={f} for={@conn.params["budeie"]} as={:budeie} action={~p"/budeie/log_in"}>
+<.simple_form :let={f} for={@conn.params["budeie"]} as={:budeie} action={~p"/budeie/log-in"}>
 <.error :if={@error_message}>
   <%= @error_message %>
 </.error>
