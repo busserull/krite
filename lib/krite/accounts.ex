@@ -6,18 +6,18 @@ defmodule Krite.Accounts do
   import Ecto.Query, warn: false
   alias Krite.Repo
   alias Krite.Accounts.Kveg
-  alias Krite.Accounts.Admin
+  alias Krite.Accounts.Budeie
 
   @doc """
-  Gets a single admin.
+  Gets a single budeie.
 
-  Raises `Ecto.NoResultsError` if the Admin does not exist.
+  Raises `Ecto.NoResultsError` if the Budeie does not exist.
   """
-  def get_admin!(id), do: Repo.get!(Admin, id)
+  def get_budeie!(id), do: Repo.get!(Budeie, id)
 
-  def get_admin_by_email_and_password(email, password) do
-    admin = Repo.get_by(Admin, email: email)
-    if Admin.valid_password?(admin, password), do: admin
+  def get_budeie_by_email_and_password(email, password) do
+    budeie = Repo.get_by(Budeie, email: email)
+    if Budeie.valid_password?(budeie, password), do: budeie
   end
 
   @doc """
