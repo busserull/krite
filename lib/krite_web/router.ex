@@ -28,7 +28,6 @@ defmodule KriteWeb.Router do
     get "/", PageController, :home
 
     resources "/kveg", KvegController
-    resources "/items", ItemController
     resources "/purchases", PurchaseController
   end
 
@@ -42,6 +41,10 @@ defmodule KriteWeb.Router do
 
   scope "/budeie", KriteWeb do
     pipe_through [:browser, :require_authenticated_budeie]
+
+    get "/", BudeieController, :index
+
+    resources "/products", ProductController
 
     get "/settings", BudeieController, :edit
     put "/settings", BudeieController, :update

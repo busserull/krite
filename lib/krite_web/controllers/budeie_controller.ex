@@ -4,6 +4,10 @@ defmodule KriteWeb.BudeieController do
   alias Krite.Accounts
   alias KriteWeb.AccountAuth
 
+  def index(conn, _params) do
+    render(conn, :index)
+  end
+
   def new(conn, _params) do
     render(conn, :new, error_message: nil)
   end
