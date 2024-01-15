@@ -6,32 +6,26 @@ defmodule KriteWeb.AccountAuth do
 
   alias Krite.Accounts
 
-  # TODO: Are these needed?
-  # Admin remember me cookie is valid for 24 hours.
-  @admin_max_age 60 * 60 * 24
-  @admin_remember_me_cookie "_krite_web_admin_remember_me"
-  @admin_remember_me_options [sign: true, max_age: @max_age, same_site: "Lax"]
-
   @doc """
-  Log an admin in.
+  Log in a budeie.
 
   It renews the session ID and clears the whole session
   to avoid fixation attacks.
   """
-  def log_in_admin(conn, admin) do
-    admin_id = Map.fetch!(admin, :id)
+  def log_in_budeie(conn, budeie) do
+    budeie_id = Map.fetch!(budeie, :id)
 
     conn
     |> configure_session(renew: true)
     |> clear_session()
-    |> put_session(:admin_id, admin_id)
+    |> put_session(:budeie_id, budeie_id)
     |> redirect(to: ~p"/")
 
-    # TODO: Return to admin start page
+    # TODO: Return to budeie start page
   end
 
   @doc """
-  Log an admin or kveg out.
+  Log a budeie or kveg out.
   It clears all session data for safety.
   """
   def log_out(conn) do
@@ -42,30 +36,30 @@ defmodule KriteWeb.AccountAuth do
 
   @doc """
   Authenticate a logged in account via the session,
-  be it either an admin or a kveg.
+  be it either a budeie or a kveg.
 
-  A logged in admin will take precedence over a kveg,
-  so that a kveg and admin will not be able to log in
+  A logged in budeie will take precedence over a kveg,
+  so that a kveg and budeie will not be able to log in
   at the same time in the same session.
   """
   def fetch_current_account(conn, _opts) do
     conn
     |> nil_accounts()
-    |> maybe_fetch_admin_or_kveg()
+    |> maybe_fetch_budeie_or_kveg()
   end
 
   defp nil_accounts(conn) do
     conn
-    |> assign(:current_admin, nil)
+    |> assign(:current_budeie, nil)
     |> assign(:current_kveg, nil)
   end
 
-  defp maybe_fetch_admin_or_kveg(conn) do
+  defp maybe_fetch_budeie_or_kveg(conn) do
     cond do
-      admin_id = get_session(conn, :admin_id) ->
-        admin = Accounts.get_admin!(admin_id)
+      budeie_id = get_session(conn, :budeie_id) ->
+        budeie = Accounts.get_budeie!(budeie_id)
         conn
-        assign(conn, :current_admin, admin)
+        assign(conn, :current_budeie, budeie)
 
       kveg_id = get_session(conn, :kveg_id) ->
         kveg = Accounts.get_kveg!(kveg_id)
@@ -77,16 +71,16 @@ defmodule KriteWeb.AccountAuth do
   end
 
   @doc """
-  Require that an admin is logged in, otherwise redirect and halt the connection.
+  Require that a budeie is logged in, otherwise redirect and halt the connection.
   """
-  def require_authenticated_admin(conn, _opts) do
-    if conn.assigns[:current_admin] do
+  def require_authenticated_budeie(conn, _opts) do
+    if conn.assigns[:current_budeie] do
       conn
     else
       # TODO: Maybe remove this flash altogether
       conn
-      |> put_flash(:error, "You must log in as an admin to access that page")
-      |> redirect(to: ~p"/admin/log_in")
+      |> put_flash(:error, "You must log in as a budeie to access that page")
+      |> redirect(to: ~p"/budeie/log_in")
       |> halt()
     end
   end

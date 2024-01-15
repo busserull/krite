@@ -1,4 +1,4 @@
-defmodule KriteWeb.AdminController do
+defmodule KriteWeb.BudeieController do
   use KriteWeb, :controller
 
   alias Krite.Accounts
@@ -8,19 +8,19 @@ defmodule KriteWeb.AdminController do
     render(conn, :new, error_message: nil)
   end
 
-  def create(conn, %{"admin" => admin_params}) do
-    %{"email" => email, "password" => password} = admin_params
+  def create(conn, %{"budeie" => budeie_params}) do
+    %{"email" => email, "password" => password} = budeie_params
 
-    case Accounts.get_admin_by_email_and_password(email, password) do
+    case Accounts.get_budeie_by_email_and_password(email, password) do
       nil ->
         # Don't disclose whether the email exists,
         # in order to avoid user enumeration attacks
         render(conn, :new, error_message: "Hm, that's not quite right")
 
-      admin ->
+      budeie ->
         conn
         |> put_flash(:info, "Welcome!")
-        |> AccountAuth.log_in_admin(admin)
+        |> AccountAuth.log_in_budeie(budeie)
     end
   end
 

@@ -4,7 +4,7 @@ defmodule KriteWeb.Router do
   import KriteWeb.AccountAuth,
     only: [
       fetch_current_account: 2,
-      require_authenticated_admin: 2,
+      require_authenticated_budeie: 2,
       require_authenticated_kveg: 2
     ]
 
@@ -32,21 +32,21 @@ defmodule KriteWeb.Router do
     resources "/purchases", PurchaseController
   end
 
-  scope "/admin", KriteWeb do
+  scope "/budeie", KriteWeb do
     pipe_through :browser
 
-    get "/log_in", AdminController, :new
-    post "/log_in", AdminController, :create
-    delete "/log_out", AdminController, :delete
+    get "/log_in", BudeieController, :new
+    post "/log_in", BudeieController, :create
+    delete "/log_out", BudeieController, :delete
     # get "/settings", AdminController, :edit
     # put "/settings", AdminController, :update
   end
 
-  scope "/admin", KriteWeb do
-    pipe_through [:browser, :require_authenticated_admin]
+  scope "/budeie", KriteWeb do
+    pipe_through [:browser, :require_authenticated_budeie]
 
-    get "/settings", AdminController, :edit
-    put "/settings", AdminController, :update
+    get "/settings", BudeieController, :edit
+    put "/settings", BudeieController, :update
   end
 
   # Other scopes may use custom stacks.
