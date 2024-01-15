@@ -4,7 +4,7 @@ defmodule Krite.Accounts.Kveg do
   alias Krite.Accounts.Deposit
   alias Krite.Purchases.Purchase
 
-  schema "kveg" do
+  schema "kveg_accounts" do
     field :active, :boolean, default: true
     field :firstname, :string
     field :lastname, :string

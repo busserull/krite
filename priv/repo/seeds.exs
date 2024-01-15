@@ -80,7 +80,7 @@ alias Krite.Repo
 alias Krite.Accounts.Budeie
 
 # Wipe database
-["items", "kveg", "budeie_accounts"]
+["items", "kveg_accounts", "budeie_accounts"]
 |> Enum.map(&"truncate #{&1} restart identity cascade")
 |> Enum.each(&Ecto.Adapters.SQL.query!(Krite.Repo, &1))
 
