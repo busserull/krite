@@ -38,8 +38,6 @@ defmodule KriteWeb.Router do
     get "/log-in", BudeieController, :new
     post "/log-in", BudeieController, :create
     delete "/log-out", BudeieController, :delete
-    # get "/settings", AdminController, :edit
-    # put "/settings", AdminController, :update
   end
 
   scope "/budeie", KriteWeb do
@@ -69,40 +67,5 @@ defmodule KriteWeb.Router do
       live_dashboard "/dashboard", metrics: KriteWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
-  end
-
-  ## Authentication routes
-
-  # TODO: Add in something similar
-  # scope "/", KriteWeb do
-  #   pipe_through [:browser, :redirect_if_candy_is_authenticated]
-
-  #   get "/candies/register", CandyRegistrationController, :new
-  #   post "/candies/register", CandyRegistrationController, :create
-  #   get "/candies/log_in", CandySessionController, :new
-  #   post "/candies/log_in", CandySessionController, :create
-  #   get "/candies/reset_password", CandyResetPasswordController, :new
-  #   post "/candies/reset_password", CandyResetPasswordController, :create
-  #   get "/candies/reset_password/:token", CandyResetPasswordController, :edit
-  #   put "/candies/reset_password/:token", CandyResetPasswordController, :update
-  # end
-
-  # TODO: Add in something similar
-  # scope "/", KriteWeb do
-  #   pipe_through [:browser, :require_authenticated_candy]
-
-  #   get "/candies/settings", CandySettingsController, :edit
-  #   put "/candies/settings", CandySettingsController, :update
-  #   get "/candies/settings/confirm_email/:token", CandySettingsController, :confirm_email
-  # end
-
-  scope "/", KriteWeb do
-    pipe_through [:browser]
-
-    delete "/candies/log_out", CandySessionController, :delete
-    get "/candies/confirm", CandyConfirmationController, :new
-    post "/candies/confirm", CandyConfirmationController, :create
-    get "/candies/confirm/:token", CandyConfirmationController, :edit
-    post "/candies/confirm/:token", CandyConfirmationController, :update
   end
 end

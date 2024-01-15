@@ -58,7 +58,6 @@ defmodule KriteWeb.AccountAuth do
     cond do
       budeie_id = get_session(conn, :budeie_id) ->
         budeie = Accounts.get_budeie!(budeie_id)
-        conn
         assign(conn, :current_budeie, budeie)
 
       kveg_id = get_session(conn, :kveg_id) ->

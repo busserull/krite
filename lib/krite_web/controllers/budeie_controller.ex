@@ -34,7 +34,7 @@ defmodule KriteWeb.BudeieController do
     render(conn, :edit)
   end
 
-  def update(conn, %{"update" => update_params}) do
+  def update(conn, %{"update" => _update_params}) do
     conn
   end
 end
