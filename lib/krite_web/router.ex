@@ -25,6 +25,8 @@ defmodule KriteWeb.Router do
   scope "/", KriteWeb do
     pipe_through :browser
 
+    live "/thermostat/:house", ThermostatLive
+
     get "/", PageController, :home
 
     resources "/kveg", KvegController
