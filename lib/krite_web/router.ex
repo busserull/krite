@@ -25,6 +25,11 @@ defmodule KriteWeb.Router do
   scope "/", KriteWeb do
     pipe_through :browser
 
+    live "/candies", CandyLive.Index, :index
+    live "/candies/new", CandyLive.Index, :new
+    live "/candies/:id/edit", CandyLive.Index, :edit
+
+    live "/thermostat", ThermostatLive, :greet
     live "/thermostat/:house", ThermostatLive
 
     get "/", PageController, :home

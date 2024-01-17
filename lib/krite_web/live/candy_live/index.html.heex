@@ -1,0 +1,42 @@
+<.header>
+  Listing all the Candies
+  <:actions>
+    <.link patch={~p"/candies/new"}>
+      <.button>New Candy</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="candies"
+  rows={@streams.candies}
+  row_click={fn {_id, candy} -> JS.navigate(~p"/candies/#{candy}") end}
+>
+  <:col :let={{_id, candy}} label="Name"><%= candy.name %></:col>
+  <:col :let={{_id, candy}} label="Calories"><%= candy.calories %></:col>
+  <:action :let={{_id, candy}}>
+    <div class="sr-only">
+      <.link navigate={~p"/candies/#{candy}"}>Show</.link>
+    </div>
+    <.link patch={~p"/candies/#{candy}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, candy}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: candy.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="candy-modal" show on_cancel={JS.patch(~p"/candies")}>
+  <.live_component
+    module={KriteWeb.CandyLive.FormComponent}
+    id={@candy.id || :new}
+    title={@page_title}
+    action={@live_action}
+    candy={@candy}
+    patch={~p"/candies"}
+  />
+</.modal>

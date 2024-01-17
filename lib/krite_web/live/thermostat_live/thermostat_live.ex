@@ -1,17 +1,19 @@
 defmodule KriteWeb.ThermostatLive do
   use KriteWeb, :live_view
 
-  def render(assigns) do
-    ~H"""
-    Controlling temperature for <%= @house %> <br /> Budeie? <%= @budeie %> <br />
-    Current temperature: <%= @temperature %>°C <button phx-click="inc_temperature">+</button>
-    """
-  end
+  # def render(assigns) do
+  #   ~H"""
+  #   Controlling temperature for <%= @house %> <br /> Budeie? <%= @budeie %> <br />
+  #   Current temperature: <%= @temperature %>°C <button phx-click="inc_temperature">+</button>
+  #   """
+  # end
 
-  def mount(%{"house" => house}, session, socket) do
+  def mount(params, session, socket) do
     temperature = 22
 
     budeie_string = Map.get(session, "budeie_id", "No budeie logged in")
+
+    house = Map.get(params, "house", "House of Life")
 
     reply_socket =
       socket
