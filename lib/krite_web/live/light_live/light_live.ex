@@ -13,7 +13,7 @@ defmodule KriteWeb.LightLive do
     </div>
 
     <form phx-change="slide">
-      <input type="range" min="0" max="100" name="light" value={"#{@light}"} />
+      <input type="range" phx-debounce="250" min="0" max="100" name="light" value={"#{@light}"} />
     </form>
 
     <button style="border: 1px solid #ececec; padding: 5px 10px; margin: 10px;" phx-click="off">
