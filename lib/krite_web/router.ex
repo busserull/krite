@@ -28,6 +28,7 @@ defmodule KriteWeb.Router do
     live "/light", LightLive
     live "/sandbox", SandboxLive
     live "/sales", SalesLive
+    live "/search", SearchLive
 
     live "/candies", CandyLive.Index, :index
     live "/candies/new", CandyLive.Index, :new
