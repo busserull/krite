@@ -12,6 +12,10 @@ defmodule KriteWeb.LightLive do
       Brightness: <%= @light %>%
     </div>
 
+    <form phx-change="slide">
+      <input type="range" min="0" max="100" name="light" value={"#{@light}"} />
+    </form>
+
     <button style="border: 1px solid #ececec; padding: 5px 10px; margin: 10px;" phx-click="off">
       Light off
     </button>
@@ -40,6 +44,11 @@ defmodule KriteWeb.LightLive do
 
   def handle_event("off", _, socket) do
     {:noreply, assign(socket, light: 0)}
+  end
+
+  def handle_event("slide", %{"light" => light_value}, socket) do
+    {light, _} = Integer.parse(light_value)
+    {:noreply, assign(socket, light: light)}
   end
 
   def handle_event("up", _, socket) do
