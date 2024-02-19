@@ -8,7 +8,8 @@ defmodule KriteWeb.SearchLive do
       assign(socket,
         airport: "",
         flights: [],
-        loading: false
+        loading: false,
+        matches: %{}
       )
 
     {:ok, socket}
@@ -18,7 +19,7 @@ defmodule KriteWeb.SearchLive do
     ~H"""
     <h1>Find a flight</h1>
 
-    <form phx-submit="search">
+    <form phx-submit="search" phx-change="suggest">
       <input
         type="text"
         name="airport"
@@ -27,12 +28,21 @@ defmodule KriteWeb.SearchLive do
         autofocus
         autocomplete="off"
         readonly={@loading}
+        style="text-transform: uppercase;"
+        list="matches"
+        phx-debounce="1000"
       />
 
       <button>
         Search
       </button>
     </form>
+
+    <datalist id="matches">
+      <option :for={{code, name} <- @matches} value={code}>
+        <%= name %>
+      </option>
+    </datalist>
 
     <div :if={@loading} class="loader">Loading...</div>
 
@@ -57,6 +67,11 @@ defmodule KriteWeb.SearchLive do
       )
 
     {:noreply, socket}
+  end
+
+  def handle_event("suggest", %{"airport" => prefix}, socket) do
+    matches = Flights.suggest(prefix)
+    {:noreply, assign(socket, :matches, matches)}
   end
 
   def handle_info({:run_search, airport}, socket) do
