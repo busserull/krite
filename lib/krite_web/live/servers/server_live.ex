@@ -46,31 +46,7 @@ defmodule KriteWeb.ServerLive do
       </div>
       <div class="main">
         <div class="wrapper">
-          <div class="server">
-            <div class="header">
-              <h2><%= @selected_server.name %></h2>
-              <span class={@selected_server.status}>
-                <%= @selected_server.status %>
-              </span>
-            </div>
-            <div class="body">
-              <div class="row">
-                <span>
-                  <%= @selected_server.deploy_count %> deploys
-                </span>
-                <span>
-                  <%= @selected_server.size %> MiB
-                </span>
-                <span>
-                  <%= @selected_server.framework %>
-                </span>
-              </div>
-              <h3>Last commit message:</h3>
-              <blockquote>
-                <%= @selected_server.last_commit_message %>
-              </blockquote>
-            </div>
-          </div>
+          <.server selected={@selected_server} />
           <div class="links">
             <.link navigate={~p"/light"}>
               Adjust lights
@@ -84,5 +60,37 @@ defmodule KriteWeb.ServerLive do
 
   def handle_event("drink", _params, socket) do
     {:noreply, update(socket, :coffees, &(&1 + 1))}
+  end
+
+  attr :selected, Server, required: true
+
+  defp server(assigns) do
+    ~H"""
+    <div class="server">
+      <div class="header">
+        <h2><%= @selected.name %></h2>
+        <span class={@selected.status}>
+          <%= @selected.status %>
+        </span>
+      </div>
+      <div class="body">
+        <div class="row">
+          <span>
+            <%= @selected.deploy_count %> deploys
+          </span>
+          <span>
+            <%= @selected.size %> MiB
+          </span>
+          <span>
+            <%= @selected.framework %>
+          </span>
+        </div>
+        <h3>Last commit message:</h3>
+        <blockquote>
+          <%= @selected.last_commit_message %>
+        </blockquote>
+      </div>
+    </div>
+    """
   end
 end
