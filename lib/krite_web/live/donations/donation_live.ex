@@ -4,6 +4,7 @@ defmodule KriteWeb.DonationLive do
   alias Krite.Donations
 
   def mount(_params, _session, socket) do
+    socket = assign(socket, donation_count: Donations.count())
     {:ok, socket, temporary_assigns: [donations: []]}
   end
 
@@ -11,9 +12,14 @@ defmodule KriteWeb.DonationLive do
     sort_by = valid_sort_by(params)
     sort_order = valid_sort_order(params)
 
+    page = param_to_int(params, "page", 1)
+    per_page = param_to_int(params, "per_page", 5)
+
     options = %{
       sort_by: sort_by,
-      sort_order: sort_order
+      sort_order: sort_order,
+      page: page,
+      per_page: per_page
     }
 
     donations = Donations.list_donations(options)
@@ -23,19 +29,41 @@ defmodule KriteWeb.DonationLive do
     {:noreply, socket}
   end
 
+  def handle_event("select-per-page", %{"per-page" => per_page}, socket) do
+    params = %{socket.assigns.options | per_page: per_page}
+    socket = push_patch(socket, to: ~p"/donations?#{params}")
+
+    {:noreply, socket}
+  end
+
   attr :sort_by, :atom, required: true
   attr :options, :map, required: true
   slot :inner_block, required: true
 
   defp sort_link(assigns) do
+    params = %{
+      assigns.options
+      | sort_by: assigns.sort_by,
+        sort_order: next_sort_order(assigns.options.sort_order)
+    }
+
+    assigns = assign(assigns, params: params)
+
     ~H"""
-    <.link patch={
-      ~p"/donations?#{%{sort_by: @sort_by, sort_order: next_sort_order(@options.sort_order)}}"
-    }>
+    <.link patch={~p"/donations?#{@params}"}>
       <%= render_slot(@inner_block) %>
       <%= sort_indicator(@sort_by, @options) %>
     </.link>
     """
+  end
+
+  defp param_to_int(params, key, default) do
+    maybe_int = params[key] || nil
+
+    case Integer.parse(maybe_int) do
+      {integer, _} -> integer
+      _ -> default
+    end
   end
 
   defp valid_sort_by(%{"sort_by" => sort_by})

@@ -8,6 +8,10 @@ defmodule Krite.Donations do
 
   alias Krite.Donations.Donation
 
+  def count do
+    Repo.aggregate(Donation, :count, :id)
+  end
+
   @doc """
   Returns the list of donations.
 
