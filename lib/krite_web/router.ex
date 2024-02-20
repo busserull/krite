@@ -32,6 +32,7 @@ defmodule KriteWeb.Router do
     live "/boats", BoatLive
     live "/servers", ServerLive
     live "/servers/:id", ServerLive
+    live "/donations", DonationLive
 
     live "/candies", CandyLive.Index, :index
     live "/candies/new", CandyLive.Index, :new

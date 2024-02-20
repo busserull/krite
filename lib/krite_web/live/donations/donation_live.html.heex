@@ -1,0 +1,43 @@
+<h1>Food Bank Donations</h1>
+<div id="donations">
+  <div class="wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th class="item">
+            <.sort_link sort_by={:item} options={@options}>
+              Item
+            </.sort_link>
+          </th>
+          <th>
+            <.sort_link sort_by={:quantity} options={@options}>
+              Quantity
+            </.sort_link>
+          </th>
+          <th>
+            <.sort_link sort_by={:days_until_expires} options={@options}>
+              Days Until Expires
+            </.sort_link>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr :for={donation <- @donations}>
+          <td class="item">
+            <span class="id"><%= donation.id %></span>
+            <span class="emoji"><%= donation.emoji %></span>
+            <%= donation.item %>
+          </td>
+          <td class="quantity">
+            <%= donation.quantity %> lbs
+          </td>
+          <td class="expires">
+            <span class={if donation.days_until_expires <= 10, do: "eat-soon"}>
+              <%= donation.days_until_expires %>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
