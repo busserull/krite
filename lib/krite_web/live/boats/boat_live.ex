@@ -3,6 +3,7 @@ defmodule KriteWeb.BoatLive do
 
   alias Krite.Boats
   alias Krite.Boats.Boat
+  alias KriteWeb.CustomComponents
 
   def mount(_params, _session, socket) do
     socket =
@@ -49,13 +50,32 @@ defmodule KriteWeb.BoatLive do
 
     <h1>Daily Boat Rentals</h1>
 
-    <.promo expiration={2}>
+    <CustomComponents.promo expiration={2}>
       Save 25% on rentals
       <:legal>
         <.icon name="hero-exclamation-circle" /> Limit 1 per party
       </:legal>
-    </.promo>
+    </CustomComponents.promo>
 
+    <.filter_form filter={@filter} />
+
+    <div
+      id="boats"
+      style="display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: minmax(100px, auto); gap: 35px 15px"
+    >
+      <.boat :for={boat <- @boats} boat={boat} />
+    </div>
+
+    <CustomComponents.promo>
+      Hurry, only 3 boats left
+    </CustomComponents.promo>
+    """
+  end
+
+  attr :filter, :map, required: true
+
+  def filter_form(assigns) do
+    ~H"""
     <form phx-change="filter">
       <div class="filters">
         <select name="type">
@@ -77,34 +97,28 @@ defmodule KriteWeb.BoatLive do
         </div>
       </div>
     </form>
+    """
+  end
 
-    <div
-      id="boats"
-      style="display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: minmax(100px, auto); gap: 35px 15px"
-    >
-      <div :for={boat <- @boats} class="boat" style="border-bottom: 1px solid #cecece;">
-        <img src={boat.image} />
-        <div class="content">
-          <div class="model">
-            <%= boat.model %>
-          </div>
+  attr :boat, Boat, required: true
 
-          <div class="details">
-            <span class="price">
-              <%= boat.price %>
-            </span>
-            <span class="type"><%= boat.type %></span>
-          </div>
+  def boat(assigns) do
+    ~H"""
+    <div class="boat" style="border-bottom: 1px solid #cecece;">
+      <img src={@boat.image} />
+      <div class="content">
+        <div class="model">
+          <%= @boat.model %>
+        </div>
+
+        <div class="details">
+          <span class="price">
+            <%= @boat.price %>
+          </span>
+          <span class="type"><%= @boat.type %></span>
         </div>
       </div>
     </div>
-
-    <.promo expiration={1}>
-      Hurry, only 3 boats left
-      <:legal>
-        Excluding weekends
-      </:legal>
-    </.promo>
     """
   end
 
@@ -113,24 +127,6 @@ defmodule KriteWeb.BoatLive do
     boats = Boats.list_boats(filter)
 
     {:noreply, assign(socket, boats: boats, filter: filter)}
-  end
-
-  def promo(assigns) do
-    ~H"""
-    <div class="promo">
-      <div class="deal">
-        <%= render_slot(@inner_block) %>
-      </div>
-
-      <div class="expiration">
-        Deal expires in <%= @expiration %> hours
-      </div>
-
-      <div class="legal">
-        <%= render_slot(@legal) %>
-      </div>
-    </div>
-    """
   end
 
   defp type_options do
