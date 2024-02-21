@@ -18,7 +18,7 @@ defmodule Krite.Servers do
 
   """
   def list_servers do
-    Repo.all(from s in Server, order_by: [asc: s.id])
+    Repo.all(from s in Server, order_by: [desc: s.id])
   end
 
   @doc """
@@ -50,7 +50,7 @@ defmodule Krite.Servers do
 
   """
   def create_server(attrs \\ %{}) do
-    %Server{}
+    %Server{deploy_count: 1, status: "up", last_commit_message: "Init commit!"}
     |> Server.changeset(attrs)
     |> Repo.insert()
   end
