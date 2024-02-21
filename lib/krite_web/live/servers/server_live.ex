@@ -6,13 +6,7 @@ defmodule KriteWeb.ServerLive do
 
   def mount(_params, _session, socket) do
     servers = Servers.list_servers()
-
-    form = to_form(Servers.change_server(%Server{}))
-
-    socket =
-      socket
-      |> assign_servers()
-      |> assign(coffees: 0, form: form)
+    socket = assign(socket, servers: servers, coffees: 0)
 
     {:ok, socket}
   end
@@ -23,7 +17,16 @@ defmodule KriteWeb.ServerLive do
   end
 
   def handle_params(_params, _uri, socket) do
-    {:noreply, assign(socket, :selected_server, hd(socket.assigns.servers))}
+    socket =
+      if socket.assigns.live_action == :new do
+        changeset = Servers.change_server(%Server{})
+
+        assign(socket, selected_server: nil, form: to_form(changeset))
+      else
+        assign(socket, selected_servers: hd(socket.assigns.servers))
+      end
+
+    {:noreply, socket}
   end
 
   def render(assigns) do
@@ -33,6 +36,10 @@ defmodule KriteWeb.ServerLive do
     <div id="servers">
       <div class="sidebar">
         <div class="nav">
+          <.link patch={~p"/servers/new"} class="add">
+            Add New Server
+          </.link>
+
           <.link
             :for={server <- @servers}
             patch={~p"/servers/#{server}"}
@@ -52,7 +59,7 @@ defmodule KriteWeb.ServerLive do
       </div>
       <div class="main">
         <div class="wrapper">
-          <.form for={@form} phx-submit="create-server">
+          <.form :if={@live_action == :new} for={@form} phx-submit="create-server">
             <div class="field">
               <.input field={@form[:name]} placeholder="Name" autocomplete="off" />
             </div>
@@ -66,9 +73,13 @@ defmodule KriteWeb.ServerLive do
             <.button phx-disable-with="Creating">
               Create
             </.button>
+
+            <.link class="cancel" patch={~p"/servers"}>
+              Cancel
+            </.link>
           </.form>
 
-          <.server selected={@selected_server} />
+          <.server :if={@live_action != :new} selected={@selected_server} />
           <div class="links">
             <.link navigate={~p"/light"}>
               Adjust lights
@@ -92,8 +103,8 @@ defmodule KriteWeb.ServerLive do
 
         socket =
           socket
-          |> assign_servers()
-          |> assign(form: form, selected_server: server)
+          |> assign(servers: Servers.list_servers())
+          |> push_patch(to: ~p"/servers/#{server.id}")
 
         {:noreply, socket}
 
@@ -133,12 +144,5 @@ defmodule KriteWeb.ServerLive do
       </div>
     </div>
     """
-  end
-
-  defp assign_servers(socket) do
-    servers = Servers.list_servers()
-    selected_server = hd(servers)
-
-    assign(socket, servers: servers, selected_servers: selected_server)
   end
 end
