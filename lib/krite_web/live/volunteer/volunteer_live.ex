@@ -11,10 +11,13 @@ defmodule KriteWeb.VolunteerLive do
 
     form = to_form(changeset)
 
+    email_form = to_form(%{"email" => ""})
+
     socket =
       assign(socket,
         volunteers: volunteers,
-        form: form
+        form: form,
+        email_form: email_form
       )
 
     {:ok, socket}
@@ -31,6 +34,13 @@ defmodule KriteWeb.VolunteerLive do
 
         <.button phx-disable-with="Saving...">
           Check In
+        </.button>
+      </.form>
+
+      <.form for={@email_form} phx-submit="email-save">
+        <.input field={@email_form[:name]} placeholder="Email" autocomplete="off" type="email" />
+        <.button phx-disable-with="Sending email...">
+          Submit
         </.button>
       </.form>
 
@@ -54,12 +64,23 @@ defmodule KriteWeb.VolunteerLive do
   def handle_event("save", %{"volunteer" => volunteer_params}, socket) do
     case Volunteers.create_volunteer(volunteer_params) do
       {:ok, volunteer} ->
-        socket = update(socket, :volunteers, &[volunteer | &1])
         changeset = Volunteers.change_volunteer(%Volunteer{})
-        {:noreply, assign(socket, :form, to_form(changeset))}
+
+        socket =
+          socket
+          |> update(:volunteers, &[volunteer | &1])
+          |> assign(:form, to_form(changeset))
+          |> put_flash(:info, "Success!")
+
+        {:noreply, socket}
 
       {:error, changeset} ->
         {:noreply, assign(socket, :form, to_form(changeset))}
     end
+  end
+
+  def handle_event("email-save", params, socket) do
+    IO.puts(inspect(params))
+    {:noreply, socket}
   end
 end
