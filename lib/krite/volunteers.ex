@@ -8,12 +8,14 @@ defmodule Krite.Volunteers do
 
   alias Krite.Volunteers.Volunteer
 
+  @topic inspect(__MODULE__)
+
   def subscribe do
-    Phoenix.PubSub.subscribe(Krite.PubSub, "volunteers")
+    Phoenix.PubSub.subscribe(Krite.PubSub, @topic)
   end
 
   def broadcast({:ok, volunteer}, event) do
-    Phoenix.PubSub.broadcast(Krite.PubSub, "volunteers", {event, volunteer})
+    Phoenix.PubSub.broadcast(Krite.PubSub, @topic, {event, volunteer})
     {:ok, volunteer}
   end
 
