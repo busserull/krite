@@ -38,7 +38,6 @@ defmodule KriteWeb.Router do
     live "/servers/:id", ServerLive
     live "/donations", DonationLive
     live "/volunteer", VolunteerLive
-    live "/secret", TopSecretLive
 
     live "/candies", CandyLive.Index, :index
     live "/candies/new", CandyLive.Index, :new
@@ -51,6 +50,12 @@ defmodule KriteWeb.Router do
 
     resources "/kveg", KvegController
     resources "/purchases", PurchaseController
+  end
+
+  scope "/", KriteWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live "/secret", TopSecretLive
   end
 
   scope "/budeie", KriteWeb do
