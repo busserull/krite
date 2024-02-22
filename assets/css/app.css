@@ -2,6 +2,30 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+#top-secret {
+  @apply mt-8 flex items-start justify-center py-10;
+}
+
+#top-secret img {
+  @apply w-40 mr-8;
+}
+
+#top-secret .mission {
+  @apply text-center max-w-md;
+}
+
+#top-secret .mission h2 {
+  @apply text-3xl text-center text-slate-600 mb-2 font-bold font-mono;
+}
+
+#top-secret .mission h3 {
+  @apply text-center text-3xl font-bold mb-2 text-violet-600 font-mono;
+}
+
+#top-secret .mission p {
+  @apply mt-8 text-2xl text-center text-slate-600 font-mono;
+}
+
 /* Custom CSS for LiveView course */
 
 body {
