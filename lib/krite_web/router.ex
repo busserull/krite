@@ -55,7 +55,10 @@ defmodule KriteWeb.Router do
   scope "/", KriteWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    live "/secret", TopSecretLive
+    live_session :authenticated, on_mount: {KriteWeb.UserAuth, :ensure_authenticated} do
+      live "/secret", TopSecretLive
+      live "/presence", PresenceLive
+    end
   end
 
   scope "/budeie", KriteWeb do
