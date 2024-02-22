@@ -17,7 +17,7 @@ defmodule KriteWeb.VolunteerLive do
       |> stream(:volunteers, volunteers)
       |> assign(:count, length(volunteers))
 
-    {:ok, stream(socket, :volunteers, volunteers)}
+    {:ok, socket}
   end
 
   def render(assigns) do
@@ -66,11 +66,6 @@ defmodule KriteWeb.VolunteerLive do
     volunteer = Volunteers.get_volunteer!(id)
     {:ok, volunteer} = Volunteers.delete_volunteer(volunteer)
 
-    socket =
-      socket
-      |> stream_delete(:volunteers, volunteer)
-      |> update(:count, &(&1 - 1))
-
     {:noreply, socket}
   end
 
@@ -96,5 +91,14 @@ defmodule KriteWeb.VolunteerLive do
 
   def handle_info({:volunteer_updated, volunteer}, socket) do
     {:noreply, stream_insert(socket, :volunteers, volunteer)}
+  end
+
+  def handle_info({:volunteer_deleted, volunteer}, socket) do
+    socket =
+      socket
+      |> stream_delete(:volunteers, volunteer)
+      |> update(:count, &(&1 - 1))
+
+    {:noreply, socket}
   end
 end
