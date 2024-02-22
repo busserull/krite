@@ -10,9 +10,22 @@ defmodule KriteWeb.VolunteerFormComponent do
     {:ok, assign(socket, :form, to_form(changeset))}
   end
 
+  def update(assigns, socket) do
+    socket =
+      socket
+      |> assign(assigns)
+      |> assign(:count, assigns.count + 1)
+
+    {:ok, socket}
+  end
+
   def render(assigns) do
     ~H"""
     <div>
+      <div class="count">
+        Go for it! You'll be volunteer #<%= @count %>
+      </div>
+
       <.form for={@form} phx-submit="save" phx-change="validate" phx-target={@myself}>
         <.input field={@form[:name]} placeholder="Name" autocomplete="off" phx-debounce="2000" />
         <.input

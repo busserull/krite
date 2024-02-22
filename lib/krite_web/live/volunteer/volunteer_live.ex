@@ -8,6 +8,13 @@ defmodule KriteWeb.VolunteerLive do
   def mount(_params, _session, socket) do
     volunteers = Volunteers.list_volunteers()
 
+    IO.inspect(volunteers)
+
+    socket =
+      socket
+      |> stream(:volunteers, volunteers)
+      |> assign(:count, length(volunteers))
+
     {:ok, stream(socket, :volunteers, volunteers)}
   end
 
@@ -16,7 +23,7 @@ defmodule KriteWeb.VolunteerLive do
     <h1>Volunteer Check-In</h1>
 
     <div id="volunteer-checkin">
-      <.live_component module={VolunteerFormComponent} id={:new} />
+      <.live_component module={VolunteerFormComponent} id={:new} count={@count} />
 
       <div id="volunteers" phx-update="stream">
         <.volunteer
@@ -46,12 +53,7 @@ defmodule KriteWeb.VolunteerLive do
         </button>
       </div>
 
-      <.link
-        class="delete"
-        data-confirm="Are you sure?"
-        phx-click="delete-volunteer"
-        phx-value-who={@volunteer.id}
-      >
+      <.link class="delete" phx-click="delete-volunteer" phx-value-who={@volunteer.id}>
         <.icon name="hero-trash-solid" />
       </.link>
     </div>
@@ -62,7 +64,12 @@ defmodule KriteWeb.VolunteerLive do
     volunteer = Volunteers.get_volunteer!(id)
     {:ok, volunteer} = Volunteers.delete_volunteer(volunteer)
 
-    {:noreply, stream_delete(socket, :volunteers, volunteer)}
+    socket =
+      socket
+      |> stream_delete(:volunteers, volunteer)
+      |> update(:count, &(&1 - 1))
+
+    {:noreply, socket}
   end
 
   def handle_event("toggle-status", %{"id" => id}, socket) do
@@ -78,6 +85,11 @@ defmodule KriteWeb.VolunteerLive do
   end
 
   def handle_info({:volunteer_created, volunteer}, socket) do
-    {:noreply, stream_insert(socket, :volunteers, volunteer, at: 0)}
+    socket =
+      socket
+      |> stream_insert(:volunteers, volunteer, at: 0)
+      |> update(:count, &(&1 + 1))
+
+    {:noreply, socket}
   end
 end
