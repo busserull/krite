@@ -8,6 +8,17 @@ defmodule Krite.Volunteers do
 
   alias Krite.Volunteers.Volunteer
 
+  def subscribe do
+    Phoenix.PubSub.subscribe(Krite.PubSub, "volunteers")
+  end
+
+  def broadcast({:ok, volunteer}, event) do
+    Phoenix.PubSub.broadcast(Krite.PubSub, "volunteers", {event, volunteer})
+    {:ok, volunteer}
+  end
+
+  def broadcast({:error, _changeset} = error, _event), do: error
+
   @doc """
   Returns the list of volunteers.
 
@@ -50,9 +61,11 @@ defmodule Krite.Volunteers do
 
   """
   def create_volunteer(attrs \\ %{}) do
-    %Volunteer{}
-    |> Volunteer.changeset(attrs)
-    |> Repo.insert()
+    {:ok, volunteer} =
+      %Volunteer{}
+      |> Volunteer.changeset(attrs)
+      |> Repo.insert()
+      |> broadcast(:volunteer_created)
   end
 
   @doc """
@@ -68,9 +81,11 @@ defmodule Krite.Volunteers do
 
   """
   def update_volunteer(%Volunteer{} = volunteer, attrs) do
-    volunteer
-    |> Volunteer.changeset(attrs)
-    |> Repo.update()
+    {:ok, volunteer} =
+      volunteer
+      |> Volunteer.changeset(attrs)
+      |> Repo.update()
+      |> broadcast(:volunteer_updated)
   end
 
   @doc """

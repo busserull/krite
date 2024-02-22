@@ -6,9 +6,11 @@ defmodule KriteWeb.VolunteerLive do
   alias KriteWeb.VolunteerFormComponent
 
   def mount(_params, _session, socket) do
-    volunteers = Volunteers.list_volunteers()
+    if connected?(socket) do
+      Volunteers.subscribe()
+    end
 
-    IO.inspect(volunteers)
+    volunteers = Volunteers.list_volunteers()
 
     socket =
       socket
@@ -75,13 +77,12 @@ defmodule KriteWeb.VolunteerLive do
   def handle_event("toggle-status", %{"id" => id}, socket) do
     volunteer = Volunteers.get_volunteer!(id)
 
-    {:ok, volunteer} =
-      Volunteers.update_volunteer(
-        volunteer,
-        %{checked_out: !volunteer.checked_out}
-      )
+    Volunteers.update_volunteer(
+      volunteer,
+      %{checked_out: !volunteer.checked_out}
+    )
 
-    {:noreply, stream_insert(socket, :volunteers, volunteer)}
+    {:noreply, socket}
   end
 
   def handle_info({:volunteer_created, volunteer}, socket) do
@@ -91,5 +92,9 @@ defmodule KriteWeb.VolunteerLive do
       |> update(:count, &(&1 + 1))
 
     {:noreply, socket}
+  end
+
+  def handle_info({:volunteer_updated, volunteer}, socket) do
+    {:noreply, stream_insert(socket, :volunteers, volunteer)}
   end
 end
