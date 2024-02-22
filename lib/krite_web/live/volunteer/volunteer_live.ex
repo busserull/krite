@@ -56,10 +56,26 @@ defmodule KriteWeb.VolunteerLive do
               <%= if volunteer.checked_out, do: "Check In", else: "Check Out" %>
             </button>
           </div>
+
+          <.link
+            class="delete"
+            data-confirm="Are you sure?"
+            phx-click="delete-volunteer"
+            phx-value-who={volunteer.id}
+          >
+            <.icon name="hero-trash-solid" />
+          </.link>
         </div>
       </div>
     </div>
     """
+  end
+
+  def handle_event("delete-volunteer", %{"who" => id}, socket) do
+    volunteer = Volunteers.get_volunteer!(id)
+    {:ok, volunteer} = Volunteers.delete_volunteer(volunteer)
+
+    {:noreply, stream_delete(socket, :volunteers, volunteer)}
   end
 
   def handle_event("toggle-status", %{"id" => id}, socket) do
