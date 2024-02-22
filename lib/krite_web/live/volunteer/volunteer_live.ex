@@ -9,16 +9,10 @@ defmodule KriteWeb.VolunteerLive do
 
     changeset = Volunteers.change_volunteer(%Volunteer{})
 
-    form = to_form(changeset)
-
-    email_form = to_form(%{"email" => ""})
-
     socket =
-      assign(socket,
-        volunteers: volunteers,
-        form: form,
-        email_form: email_form
-      )
+      socket
+      |> stream(:volunteers, volunteers)
+      |> assign(:form, to_form(changeset))
 
     {:ok, socket}
   end
@@ -43,17 +37,25 @@ defmodule KriteWeb.VolunteerLive do
         </.button>
       </.form>
 
-      <div :for={volunteer <- @volunteers} class={"volunteer #{if volunteer.checked_out, do: "out"}"}>
-        <div class="name">
-          <%= volunteer.name %>
-        </div>
-        <div class="phone">
-          <%= volunteer.phone %>
-        </div>
-        <div class="status">
-          <button>
-            <%= if volunteer.checked_out, do: "Check In", else: "Check Out" %>
-          </button>
+      <div id="volunteers" phx-update="stream">
+        <div
+          :for={{volunteer_id, volunteer} <- @streams.volunteers}
+          class={"volunteer #{if volunteer.checked_out, do: "out"}"}
+          id={volunteer_id}
+        >
+          <div class="name">
+            <%= volunteer.name %>
+          </div>
+
+          <div class="phone">
+            <%= volunteer.phone %>
+          </div>
+
+          <div class="status">
+            <button>
+              <%= if volunteer.checked_out, do: "Check In", else: "Check Out" %>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -67,7 +69,7 @@ defmodule KriteWeb.VolunteerLive do
 
         socket =
           socket
-          |> update(:volunteers, &[volunteer | &1])
+          |> stream_insert(:volunteers, volunteer, at: 0)
           |> assign(:form, to_form(changeset))
           |> put_flash(:info, "Success!")
 
