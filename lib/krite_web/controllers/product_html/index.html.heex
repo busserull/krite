@@ -8,34 +8,36 @@
 </.header>
 
 <.header>
-Active items
+  Active items
 </.header>
 
 <.table id="active" rows={@active_items} row_click={&JS.navigate(~p"/budeie/products/#{&1}/edit")}>
-<:col :let={item} label="Name"><%= item.name %></:col>
-<:col :let={item} label="Price"><%= item.price %></:col>
-<:col label="Estimated stock"><%= 5 %></:col>
-<:action :let={item}>
-
-<div class="sr-only">
-<.link navigate={~p"/budeie/products/#{item}/edit"}>Edit</.link>
-</div>
-
-</:action>
+  <:col :let={item} label="Name"><%= item.name %></:col>
+  <:col :let={item} label="Price"><%= item.price %></:col>
+  <:col label="Estimated stock"><%= 5 %></:col>
+  <:action :let={item}>
+    <div class="sr-only">
+      <.link navigate={~p"/budeie/products/#{item}/edit"}>Edit</.link>
+    </div>
+  </:action>
   <:action :let={item}>
     <.link navigate={~p"/budeie/products/#{item}/edit"}>Edit</.link>
   </:action>
   <:action :let={item}>
-    <.link href={~p"/items/#{item}"} method="delete" data-confirm="This will hide the product from purchase. Are you sure?">
+    <.link
+      href={~p"/items/#{item}"}
+      method="delete"
+      data-confirm="This will hide the product from purchase. Are you sure?"
+    >
       Deactivate
     </.link>
   </:action>
 </.table>
 
 <.header :if={!Enum.empty?(@inactive_items)}>
-Inactive items
+  Inactive items
 </.header>
 
 <.table id="inactive" rows={@inactive_items}>
-<:col label="Name">Test</:col>
+  <:col label="Name">Test</:col>
 </.table>

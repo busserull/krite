@@ -59,7 +59,8 @@ defmodule Krite.SecretAccountsTest do
     end
 
     test "validates email and password when given" do
-      {:error, changeset} = SecretAccounts.register_user(%{email: "not valid", password: "not valid"})
+      {:error, changeset} =
+        SecretAccounts.register_user(%{email: "not valid", password: "not valid"})
 
       assert %{
                email: ["must have the @ sign and no spaces"],
@@ -200,7 +201,11 @@ defmodule Krite.SecretAccountsTest do
 
       token =
         extract_user_token(fn url ->
-          SecretAccounts.deliver_user_update_email_instructions(%{user | email: email}, user.email, url)
+          SecretAccounts.deliver_user_update_email_instructions(
+            %{user | email: email},
+            user.email,
+            url
+          )
         end)
 
       %{user: user, token: token, email: email}
@@ -223,7 +228,9 @@ defmodule Krite.SecretAccountsTest do
     end
 
     test "does not update email if user email changed", %{user: user, token: token} do
-      assert SecretAccounts.update_user_email(%{user | email: "current@example.com"}, token) == :error
+      assert SecretAccounts.update_user_email(%{user | email: "current@example.com"}, token) ==
+               :error
+
       assert Repo.get!(User, user.id).email == user.email
       assert Repo.get_by(UserToken, user_id: user.id)
     end
@@ -488,7 +495,9 @@ defmodule Krite.SecretAccountsTest do
     end
 
     test "updates the password", %{user: user} do
-      {:ok, updated_user} = SecretAccounts.reset_user_password(user, %{password: "new valid password"})
+      {:ok, updated_user} =
+        SecretAccounts.reset_user_password(user, %{password: "new valid password"})
+
       assert is_nil(updated_user.password)
       assert SecretAccounts.get_user_by_email_and_password(user.email, "new valid password")
     end

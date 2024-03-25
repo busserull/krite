@@ -10,9 +10,7 @@ defmodule Krite.PurchasesFixtures do
   def purchase_fixture(attrs \\ %{}) do
     {:ok, purchase} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> Krite.Purchases.create_purchase()
 
     purchase

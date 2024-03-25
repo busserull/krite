@@ -15,7 +15,12 @@
 
 <.back navigate={~p"/candies"}>Back to candies</.back>
 
-<.modal :if={@live_action == :edit} id="candy-modal" show on_cancel={JS.patch(~p"/candies/#{@candy}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="candy-modal"
+  show
+  on_cancel={JS.patch(~p"/candies/#{@candy}")}
+>
   <.live_component
     module={KriteWeb.CandyLive.FormComponent}
     id={@candy.id}

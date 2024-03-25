@@ -214,7 +214,9 @@ defmodule KriteWeb.AdminAuthTest do
 
   describe "redirect_if_admin_is_authenticated/2" do
     test "redirects if admin is authenticated", %{conn: conn, admin: admin} do
-      conn = conn |> assign(:current_admin, admin) |> AdminAuth.redirect_if_admin_is_authenticated([])
+      conn =
+        conn |> assign(:current_admin, admin) |> AdminAuth.redirect_if_admin_is_authenticated([])
+
       assert conn.halted
       assert redirected_to(conn) == ~p"/"
     end

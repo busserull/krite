@@ -8,7 +8,15 @@ defmodule Krite.AccountsTest do
 
     import Krite.AccountsFixtures
 
-    @invalid_attrs %{active: nil, balance: nil, firstname: nil, lastname: nil, subtitle: nil, email: nil, sauna_pass_end: nil}
+    @invalid_attrs %{
+      active: nil,
+      balance: nil,
+      firstname: nil,
+      lastname: nil,
+      subtitle: nil,
+      email: nil,
+      sauna_pass_end: nil
+    }
 
     test "list_kveg/0 returns all kveg" do
       kveg = kveg_fixture()
@@ -21,7 +29,15 @@ defmodule Krite.AccountsTest do
     end
 
     test "create_kveg/1 with valid data creates a kveg" do
-      valid_attrs = %{active: true, balance: 42, firstname: "some firstname", lastname: "some lastname", subtitle: "some subtitle", email: "some email", sauna_pass_end: ~N[2023-12-04 14:18:00]}
+      valid_attrs = %{
+        active: true,
+        balance: 42,
+        firstname: "some firstname",
+        lastname: "some lastname",
+        subtitle: "some subtitle",
+        email: "some email",
+        sauna_pass_end: ~N[2023-12-04 14:18:00]
+      }
 
       assert {:ok, %Kveg{} = kveg} = Accounts.create_kveg(valid_attrs)
       assert kveg.active == true
@@ -39,7 +55,16 @@ defmodule Krite.AccountsTest do
 
     test "update_kveg/2 with valid data updates the kveg" do
       kveg = kveg_fixture()
-      update_attrs = %{active: false, balance: 43, firstname: "some updated firstname", lastname: "some updated lastname", subtitle: "some updated subtitle", email: "some updated email", sauna_pass_end: ~N[2023-12-05 14:18:00]}
+
+      update_attrs = %{
+        active: false,
+        balance: 43,
+        firstname: "some updated firstname",
+        lastname: "some updated lastname",
+        subtitle: "some updated subtitle",
+        email: "some updated email",
+        sauna_pass_end: ~N[2023-12-05 14:18:00]
+      }
 
       assert {:ok, %Kveg{} = kveg} = Accounts.update_kveg(kveg, update_attrs)
       assert kveg.active == false

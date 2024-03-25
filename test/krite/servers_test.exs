@@ -8,7 +8,14 @@ defmodule Krite.ServersTest do
 
     import Krite.ServersFixtures
 
-    @invalid_attrs %{name: nil, size: nil, status: nil, deploy_count: nil, framework: nil, last_commit_message: nil}
+    @invalid_attrs %{
+      name: nil,
+      size: nil,
+      status: nil,
+      deploy_count: nil,
+      framework: nil,
+      last_commit_message: nil
+    }
 
     test "list_servers/0 returns all servers" do
       server = server_fixture()
@@ -21,7 +28,14 @@ defmodule Krite.ServersTest do
     end
 
     test "create_server/1 with valid data creates a server" do
-      valid_attrs = %{name: "some name", size: 120.5, status: "some status", deploy_count: 42, framework: "some framework", last_commit_message: "some last_commit_message"}
+      valid_attrs = %{
+        name: "some name",
+        size: 120.5,
+        status: "some status",
+        deploy_count: 42,
+        framework: "some framework",
+        last_commit_message: "some last_commit_message"
+      }
 
       assert {:ok, %Server{} = server} = Servers.create_server(valid_attrs)
       assert server.name == "some name"
@@ -38,7 +52,15 @@ defmodule Krite.ServersTest do
 
     test "update_server/2 with valid data updates the server" do
       server = server_fixture()
-      update_attrs = %{name: "some updated name", size: 456.7, status: "some updated status", deploy_count: 43, framework: "some updated framework", last_commit_message: "some updated last_commit_message"}
+
+      update_attrs = %{
+        name: "some updated name",
+        size: 456.7,
+        status: "some updated status",
+        deploy_count: 43,
+        framework: "some updated framework",
+        last_commit_message: "some updated last_commit_message"
+      }
 
       assert {:ok, %Server{} = server} = Servers.update_server(server, update_attrs)
       assert server.name == "some updated name"

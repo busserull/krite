@@ -88,14 +88,19 @@ defmodule Krite.PurchasesTest do
       purchase_item = purchase_item_fixture()
       update_attrs = %{unit_price_at_purchase: 43, amount: 43}
 
-      assert {:ok, %PurchaseItem{} = purchase_item} = Purchases.update_purchase_item(purchase_item, update_attrs)
+      assert {:ok, %PurchaseItem{} = purchase_item} =
+               Purchases.update_purchase_item(purchase_item, update_attrs)
+
       assert purchase_item.unit_price_at_purchase == 43
       assert purchase_item.amount == 43
     end
 
     test "update_purchase_item/2 with invalid data returns error changeset" do
       purchase_item = purchase_item_fixture()
-      assert {:error, %Ecto.Changeset{}} = Purchases.update_purchase_item(purchase_item, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Purchases.update_purchase_item(purchase_item, @invalid_attrs)
+
       assert purchase_item == Purchases.get_purchase_item!(purchase_item.id)
     end
 

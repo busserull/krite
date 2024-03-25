@@ -21,7 +21,12 @@ defmodule Krite.DonationsTest do
     end
 
     test "create_donation/1 with valid data creates a donation" do
-      valid_attrs = %{item: "some item", emoji: "some emoji", quantity: 42, days_until_expires: 42}
+      valid_attrs = %{
+        item: "some item",
+        emoji: "some emoji",
+        quantity: 42,
+        days_until_expires: 42
+      }
 
       assert {:ok, %Donation{} = donation} = Donations.create_donation(valid_attrs)
       assert donation.item == "some item"
@@ -36,7 +41,13 @@ defmodule Krite.DonationsTest do
 
     test "update_donation/2 with valid data updates the donation" do
       donation = donation_fixture()
-      update_attrs = %{item: "some updated item", emoji: "some updated emoji", quantity: 43, days_until_expires: 43}
+
+      update_attrs = %{
+        item: "some updated item",
+        emoji: "some updated emoji",
+        quantity: 43,
+        days_until_expires: 43
+      }
 
       assert {:ok, %Donation{} = donation} = Donations.update_donation(donation, update_attrs)
       assert donation.item == "some updated item"

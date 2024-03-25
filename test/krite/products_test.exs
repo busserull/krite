@@ -36,7 +36,13 @@ defmodule Krite.ProductsTest do
 
     test "update_item/2 with valid data updates the item" do
       item = item_fixture()
-      update_attrs = %{active: false, name: "some updated name", barcode: "some updated barcode", price: 43}
+
+      update_attrs = %{
+        active: false,
+        name: "some updated name",
+        barcode: "some updated barcode",
+        price: 43
+      }
 
       assert {:ok, %Item{} = item} = Products.update_item(item, update_attrs)
       assert item.active == false

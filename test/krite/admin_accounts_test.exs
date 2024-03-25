@@ -59,7 +59,8 @@ defmodule Krite.AdminAccountsTest do
     end
 
     test "validates email and password when given" do
-      {:error, changeset} = AdminAccounts.register_admin(%{email: "not valid", password: "not valid"})
+      {:error, changeset} =
+        AdminAccounts.register_admin(%{email: "not valid", password: "not valid"})
 
       assert %{
                email: ["must have the @ sign and no spaces"],
@@ -168,7 +169,10 @@ defmodule Krite.AdminAccountsTest do
 
     test "applies the email without persisting it", %{admin: admin} do
       email = unique_admin_email()
-      {:ok, admin} = AdminAccounts.apply_admin_email(admin, valid_admin_password(), %{email: email})
+
+      {:ok, admin} =
+        AdminAccounts.apply_admin_email(admin, valid_admin_password(), %{email: email})
+
       assert admin.email == email
       assert AdminAccounts.get_admin!(admin.id).email != email
     end
@@ -200,7 +204,11 @@ defmodule Krite.AdminAccountsTest do
 
       token =
         extract_admin_token(fn url ->
-          AdminAccounts.deliver_admin_update_email_instructions(%{admin | email: email}, admin.email, url)
+          AdminAccounts.deliver_admin_update_email_instructions(
+            %{admin | email: email},
+            admin.email,
+            url
+          )
         end)
 
       %{admin: admin, token: token, email: email}
@@ -223,7 +231,9 @@ defmodule Krite.AdminAccountsTest do
     end
 
     test "does not update email if admin email changed", %{admin: admin, token: token} do
-      assert AdminAccounts.update_admin_email(%{admin | email: "current@example.com"}, token) == :error
+      assert AdminAccounts.update_admin_email(%{admin | email: "current@example.com"}, token) ==
+               :error
+
       assert Repo.get!(Admin, admin.id).email == admin.email
       assert Repo.get_by(AdminToken, admin_id: admin.id)
     end
@@ -488,7 +498,9 @@ defmodule Krite.AdminAccountsTest do
     end
 
     test "updates the password", %{admin: admin} do
-      {:ok, updated_admin} = AdminAccounts.reset_admin_password(admin, %{password: "new valid password"})
+      {:ok, updated_admin} =
+        AdminAccounts.reset_admin_password(admin, %{password: "new valid password"})
+
       assert is_nil(updated_admin.password)
       assert AdminAccounts.get_admin_by_email_and_password(admin.email, "new valid password")
     end

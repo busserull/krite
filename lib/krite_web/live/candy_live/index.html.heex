@@ -30,7 +30,12 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="candy-modal" show on_cancel={JS.patch(~p"/candies")}>
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="candy-modal"
+  show
+  on_cancel={JS.patch(~p"/candies")}
+>
   <.live_component
     module={KriteWeb.CandyLive.FormComponent}
     id={@candy.id || :new}

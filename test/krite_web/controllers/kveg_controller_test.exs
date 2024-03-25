@@ -3,9 +3,33 @@ defmodule KriteWeb.KvegControllerTest do
 
   import Krite.AccountsFixtures
 
-  @create_attrs %{active: true, balance: 42, firstname: "some firstname", lastname: "some lastname", subtitle: "some subtitle", email: "some email", sauna_pass_end: ~N[2023-12-04 14:18:00]}
-  @update_attrs %{active: false, balance: 43, firstname: "some updated firstname", lastname: "some updated lastname", subtitle: "some updated subtitle", email: "some updated email", sauna_pass_end: ~N[2023-12-05 14:18:00]}
-  @invalid_attrs %{active: nil, balance: nil, firstname: nil, lastname: nil, subtitle: nil, email: nil, sauna_pass_end: nil}
+  @create_attrs %{
+    active: true,
+    balance: 42,
+    firstname: "some firstname",
+    lastname: "some lastname",
+    subtitle: "some subtitle",
+    email: "some email",
+    sauna_pass_end: ~N[2023-12-04 14:18:00]
+  }
+  @update_attrs %{
+    active: false,
+    balance: 43,
+    firstname: "some updated firstname",
+    lastname: "some updated lastname",
+    subtitle: "some updated subtitle",
+    email: "some updated email",
+    sauna_pass_end: ~N[2023-12-05 14:18:00]
+  }
+  @invalid_attrs %{
+    active: nil,
+    balance: nil,
+    firstname: nil,
+    lastname: nil,
+    subtitle: nil,
+    email: nil,
+    sauna_pass_end: nil
+  }
 
   describe "index" do
     test "lists all kveg", %{conn: conn} do

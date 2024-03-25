@@ -1,20 +1,20 @@
 <div class="mx-auto max-w-sm">
-<.header class="text-center">
-Are you a Budeie? Sign in
-</.header>
+  <.header class="text-center">
+    Are you a Budeie? Sign in
+  </.header>
 
-<.simple_form :let={f} for={@conn.params["budeie"]} as={:budeie} action={~p"/budeie/log-in"}>
-<.error :if={@error_message}>
-  <%= @error_message %>
-</.error>
+  <.simple_form :let={f} for={@conn.params["budeie"]} as={:budeie} action={~p"/budeie/log-in"}>
+    <.error :if={@error_message}>
+      <%= @error_message %>
+    </.error>
 
-<.input field={f[:email]} type="email" label="Email" required />
-<.input field={f[:password]} type="password" label="Password" required />
+    <.input field={f[:email]} type="email" label="Email" required />
+    <.input field={f[:password]} type="password" label="Password" required />
 
-<:actions>
-<.button phx-disable-with="Signing in..." class="w-full">
-Sign in
-</.button>
-</:actions>
-</.simple_form>
+    <:actions>
+      <.button phx-disable-with="Signing in..." class="w-full">
+        Sign in
+      </.button>
+    </:actions>
+  </.simple_form>
 </div>

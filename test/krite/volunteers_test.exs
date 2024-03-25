@@ -37,7 +37,9 @@ defmodule Krite.VolunteersTest do
       volunteer = volunteer_fixture()
       update_attrs = %{name: "some updated name", phone: "some updated phone", checked_out: false}
 
-      assert {:ok, %Volunteer{} = volunteer} = Volunteers.update_volunteer(volunteer, update_attrs)
+      assert {:ok, %Volunteer{} = volunteer} =
+               Volunteers.update_volunteer(volunteer, update_attrs)
+
       assert volunteer.name == "some updated name"
       assert volunteer.phone == "some updated phone"
       assert volunteer.checked_out == false

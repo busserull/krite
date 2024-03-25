@@ -395,3 +395,18 @@ for _i <- 1..200 do
   }
   |> Repo.insert!()
 end
+
+alias Krite.SecretAccounts.User
+
+users = [
+  "alpha",
+  "bravo",
+  "charlie"
+]
+
+for user <- ["alice", "bob", "charlie"] do
+  email = user <> "@example.com"
+  password = user
+
+  Repo.insert!(User.registration_changeset(%User{}, %{email: email, password: password}))
+end

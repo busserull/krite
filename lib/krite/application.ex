@@ -12,6 +12,7 @@ defmodule Krite.Application do
       Krite.Repo,
       {DNSCluster, query: Application.get_env(:krite, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Krite.PubSub},
+      KriteWeb.Presence,
       # Start the Finch HTTP client for sending emails
       {Finch, name: Krite.Finch},
       # Start a worker by calling: Krite.Worker.start_link(arg)

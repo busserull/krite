@@ -4,7 +4,12 @@ defmodule KriteWeb.ItemControllerTest do
   import Krite.ProductsFixtures
 
   @create_attrs %{active: true, name: "some name", barcode: "some barcode", price: 42}
-  @update_attrs %{active: false, name: "some updated name", barcode: "some updated barcode", price: 43}
+  @update_attrs %{
+    active: false,
+    name: "some updated name",
+    barcode: "some updated barcode",
+    price: 43
+  }
   @invalid_attrs %{active: nil, name: nil, barcode: nil, price: nil}
 
   describe "index" do

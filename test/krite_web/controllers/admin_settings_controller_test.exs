@@ -102,7 +102,11 @@ defmodule KriteWeb.AdminSettingsControllerTest do
 
       token =
         extract_admin_token(fn url ->
-          AdminAccounts.deliver_admin_update_email_instructions(%{admin | email: email}, admin.email, url)
+          AdminAccounts.deliver_admin_update_email_instructions(
+            %{admin | email: email},
+            admin.email,
+            url
+          )
         end)
 
       %{token: token, email: email}

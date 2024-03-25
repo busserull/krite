@@ -165,7 +165,11 @@ defmodule KriteWeb.UserSettingsLiveTest do
 
       token =
         extract_user_token(fn url ->
-          SecretAccounts.deliver_user_update_email_instructions(%{user | email: email}, user.email, url)
+          SecretAccounts.deliver_user_update_email_instructions(
+            %{user | email: email},
+            user.email,
+            url
+          )
         end)
 
       %{conn: log_in_user(conn, user), token: token, email: email, user: user}
