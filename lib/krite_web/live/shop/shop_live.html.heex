@@ -1,0 +1,49 @@
+<h1>Garage Sale</h1>
+
+<div id="shop">
+  <div class="nav">
+    <button
+      :if={Enum.count(@cart) > 0}
+      phx-click={toggle_cart()}
+      id="cart-button"
+    >
+      <.icon name="hero-shopping-cart" />
+      <span class="count"><%= Enum.count(@cart) %></span>
+    </button>
+  </div>
+
+  <div class="products">
+    <div :for={product <- @products} class="product">
+      <div class="image">
+        <%= product.image %>
+      </div>
+      <div class="name">
+        <%= product.name %>
+      </div>
+      <button phx-click="add-product" phx-value-product={product.image}>Add</button>
+    </div>
+  </div>
+
+  <div id="backdrop" class={unless @show_cart, do: "hidden"} phx-click={toggle_cart()}></div>
+
+  <div id="cart" class={unless @show_cart, do: "hidden"}>
+    <div class="content">
+      <div class="header">
+        <h2>Shopping Cart</h2>
+        <button phx-click={toggle_cart()}>
+          <.icon name="hero-x-mark" />
+        </button>
+      </div>
+      <ul>
+        <li :for={{product, quantity} <- @cart}>
+          <span class="product">
+            <%= product %>
+          </span>
+          <span class="quantity">
+            &times; <%= quantity %>
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
