@@ -21,7 +21,7 @@
       <div class="name">
         <%= product.name %>
       </div>
-      <button phx-click={JS.push("add-product", value: %{product: product.image}) |> JS.transition("shake", to: "#cart-button", time: 500)}>Add</button>
+      <button phx-click={add_product(product)}>Add</button>
     </div>
   </div>
 

@@ -26,4 +26,9 @@ defmodule KriteWeb.ShopLive do
     )
     |> JS.toggle(to: "#backdrop", in: "fade-in", out: "fade-out")
   end
+
+  def add_product(product) do
+    JS.push("add-product", value: %{product: product.image})
+    |> JS.transition("shake", to: "#cart-button", time: 500)
+  end
 end
