@@ -18,7 +18,7 @@ defmodule Krite.Accounts.Budeie do
     budeie
     |> cast(attrs, [:email, :password])
     |> validate_required([:email, :password])
-    |> validate_length(:password, min: 12, max: 160)
+    |> validate_length(:password, min: 2, max: 160)
     |> downcase_email()
     |> hash_password()
   end

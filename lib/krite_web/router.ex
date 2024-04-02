@@ -27,7 +27,11 @@ defmodule KriteWeb.Router do
 
     get "/", PageController, :home
 
-    resources "/kveg", KvegController
+    get "/log-in", KvegController, :new
+    post "/log-in", KvegController, :create
+    delete "/log-out", KvegController, :delete
+
+    resources "/kveg-list", KvegListController
     resources "/purchases", PurchaseController
   end
 
@@ -49,6 +53,10 @@ defmodule KriteWeb.Router do
     get "/settings", BudeieController, :edit
     put "/settings", BudeieController, :update
   end
+
+  # scope "/kveg", KriteWeb do
+  #   pipe_through [:browser, :require_authenticated_kveg]
+  # end
 
   # Other scopes may use custom stacks.
   # scope "/api", KriteWeb do

@@ -13,8 +13,6 @@
   <:col :let={kveg} label="Lastname"><%= kveg.lastname %></:col>
   <:col :let={kveg} label="Subtitle"><%= kveg.subtitle %></:col>
   <:col :let={kveg} label="Email"><%= kveg.email %></:col>
-  <:col :let={kveg} label="Balance"><%= kveg.balance %></:col>
-  <:col :let={kveg} label="Sauna pass end"><%= kveg.sauna_pass_end %></:col>
   <:action :let={kveg}>
     <div class="sr-only">
       <.link navigate={~p"/kveg/#{kveg}"}>Show</.link>

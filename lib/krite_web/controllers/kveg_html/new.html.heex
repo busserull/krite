@@ -1,8 +1,14 @@
-<.header>
-  New Kveg
-  <:subtitle>Use this form to manage kveg records in your database.</:subtitle>
-</.header>
+<h1>Sign in</h1>
 
-<.kveg_form changeset={@changeset} action={~p"/kveg"} />
+<.form :let={f} for={%{}} action={~p"/log-in"}>
+<.input field={f[:email]} type="email" label="Email address" required />
 
-<.back navigate={~p"/kveg"}>Back to kveg</.back>
+<.button>Submit form</.button>
+</.form>
+
+<.simple_form :let={f} for={@conn.params["kveg"]} as={:budeie} action="~p/log-in">
+
+<.input field={f[:email]} type="email" label="Email" required />
+<.input field={f[:password]} type="password" label="Password" required />
+
+</.simple_form>

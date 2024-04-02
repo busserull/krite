@@ -63,7 +63,9 @@
 </div>
 
 <div class="px-4 sm:px-6" :if={!@current_budeie && !@current_kveg}>
-<p>Log in as Kveg</p>
+<.link href={~p"/log-in"}>
+Log in as Kveg
+</.link>
 <p>OR</p>
 <.link href={~p"/budeie/log-in"}>
 Log in as a Budeie
