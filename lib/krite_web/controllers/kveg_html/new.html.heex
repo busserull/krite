@@ -1,14 +1,14 @@
-<h1>Sign in</h1>
+<h1>Welcome! How about logging in?</h1>
 
-<.form :let={f} for={%{}} action={~p"/log-in"}>
-<.input field={f[:email]} type="email" label="Email address" required />
-
-<.button>Submit form</.button>
-</.form>
-
-<.simple_form :let={f} for={@conn.params["kveg"]} as={:budeie} action="~p/log-in">
+<.form :let={f} for={%{}} as={:kveg} action={~p"/log-in"}>
+<.error :if={@error_message}>
+<%= @error_message %>
+</.error>
 
 <.input field={f[:email]} type="email" label="Email" required />
 <.input field={f[:password]} type="password" label="Password" required />
 
-</.simple_form>
+<.button>
+Log me in
+</.button>
+</.form>

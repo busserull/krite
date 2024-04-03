@@ -15,10 +15,12 @@ defmodule Krite.Accounts do
   """
   def get_budeie!(id), do: Repo.get!(Budeie, id)
 
-  def get_budeie_by_email_and_password(email, password) do
+  def get_budeie_by_email_and_password(email, password) when is_binary(email) do
     budeie = Repo.get_by(Budeie, email: email)
     if Budeie.valid_password?(budeie, password), do: budeie
   end
+
+  def get_budeie_by_email_and_password(_, _), do: nil
 
   @doc """
   Returns the list of kveg.
@@ -48,6 +50,27 @@ defmodule Krite.Accounts do
 
   """
   def get_kveg!(id), do: Kveg |> Repo.get!(id) |> calculate_and_put_balance()
+
+  @doc """
+  Get a single kveg by email and password, returning nil if no such kveg exists.
+
+  ## Examples
+
+    iex> get_kveg_by_email_and_password("kveg@example.com", "correct_password")
+    %Kveg{}
+
+    iex> get_kveg_by_email_and_password("kveg@example.com", "wrong_password")
+    nil
+
+    iex> get_kveg_by_email_and_password(123, 456)
+    nil
+  """
+  def get_kveg_by_email_and_password(email, password) when is_binary(email) do
+    kveg = Repo.get_by(Kveg, email: email)
+    if Kveg.valid_password?(kveg, password), do: kveg
+    end
+
+  def get_kveg_by_email_and_password(_, _), do: nil
 
   @doc """
   Creates a kveg.
