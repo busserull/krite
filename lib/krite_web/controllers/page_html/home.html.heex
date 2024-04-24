@@ -62,24 +62,28 @@
   </div>
 </div>
 
-<div class="px-4 sm:px-6" :if={!@current_budeie && !@current_kveg}>
-<.link href={~p"/log-in"}>
-Log in as Kveg
-</.link>
-<p>OR</p>
-<.link href={~p"/budeie/log-in"}>
-Log in as a Budeie
-</.link>
+<div :if={!@current_budeie && !@current_kveg} class="px-4 sm:px-6">
+  <.link href={~p"/log-in"}>
+    Log in as Kveg
+  </.link>
+  <p>OR</p>
+  <.link href={~p"/budeie/log-in"}>
+    Log in as a Budeie
+  </.link>
 </div>
 
 <div class="px-4 sm:px-6">
-<.header :if={@current_budeie}>
-<.link href={~p"/budeie/log-out"} method="delete">
-Log out Budeie
-</.link>
-</.header>
+  <.header :if={@current_budeie}>
+    <.link href={~p"/budeie/log-out"} method="delete">
+      Log out Budeie
+    </.link>
+  </.header>
 
-<.header :if={@current_kveg}>
-We have a kveg
-</.header>
+  <.header :if={@current_kveg}>
+    We have a kveg
+  </.header>
+
+  <.link href={~p"/log-out"} method="delete">
+    Log out
+  </.link>
 </div>

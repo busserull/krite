@@ -23,6 +23,22 @@ defmodule KriteWeb.AccountAuth do
   end
 
   @doc """
+  Log in a kveg.
+
+  It renews the session ID and clears the whole session
+  to avoid fixation attacks.
+  """
+  def log_in_kveg(conn, kveg) do
+    conn
+    |> configure_session(renew: true)
+    |> clear_session()
+    |> put_session(:kveg_id, kveg.id)
+    |> redirect(to: ~p"/")
+
+    # TODO: Return to kveg home page
+  end
+
+  @doc """
   Log a budeie or kveg out.
   It clears all session data for safety.
   """

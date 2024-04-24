@@ -1,14 +1,14 @@
 <h1>Welcome! How about logging in?</h1>
 
 <.form :let={f} for={%{}} as={:kveg} action={~p"/log-in"}>
-<.error :if={@error_message}>
-<%= @error_message %>
-</.error>
+  <.error :if={@error_message}>
+    <%= @error_message %>
+  </.error>
 
-<.input field={f[:email]} type="email" label="Email" required />
-<.input field={f[:password]} type="password" label="Password" required />
+  <.input field={f[:email]} type="email" label="Email" value={@email} required />
+  <.input field={f[:password]} type="password" label="Password" required />
 
-<.button>
-Log me in
-</.button>
+  <.button>
+    Log me in
+  </.button>
 </.form>
