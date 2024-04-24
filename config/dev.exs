@@ -2,7 +2,7 @@ import Config
 
 # Configure your database
 config :krite, Krite.Repo,
-  username: "postgres",
+  username: "austreng",
   password: "postgres",
   hostname: "localhost",
   database: "krite_dev",
