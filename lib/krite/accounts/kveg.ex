@@ -27,13 +27,21 @@ defmodule Krite.Accounts.Kveg do
   @doc false
   def changeset(kveg, attrs) do
     kveg
-    |> cast(attrs, [:email, :password, :active, :firstname, :lastname, :subtitle, :sauna_pass_end])
-    |> validate_required([
-    :email,
-    :password,
+    |> cast(attrs, [
+      :email,
+      :password,
       :active,
       :firstname,
       :lastname,
+      :subtitle,
+      :sauna_pass_end
+    ])
+    |> validate_required([
+      :email,
+      :password,
+      :active,
+      :firstname,
+      :lastname
     ])
     |> downcase_email()
     |> hash_password()
@@ -43,15 +51,15 @@ defmodule Krite.Accounts.Kveg do
     if changeset.valid? do
       email =
         changeset
-      |> get_change(:email)
-      |> String.downcase()
+        |> get_change(:email)
+        |> String.downcase()
 
       changeset
       |> put_change(:email, email)
-      else
-        changeset
-        end
+    else
+      changeset
     end
+  end
 
   defp hash_password(changeset) do
     if changeset.valid? do
@@ -61,10 +69,10 @@ defmodule Krite.Accounts.Kveg do
       changeset
       |> put_change(:password_hash, hash)
       |> delete_change(:password)
-      else
-        changeset
-      end
+    else
+      changeset
     end
+  end
 
   @doc """
   Verify a password.
@@ -75,10 +83,10 @@ defmodule Krite.Accounts.Kveg do
   def valid_password?(%Krite.Accounts.Kveg{password_hash: hash}, password)
       when byte_size(password) > 0 do
     Argon2.verify_pass(password, hash)
-    end
+  end
 
   def valid_password?(_, _) do
     Argon2.no_user_verify()
     false
-    end
+  end
 end
