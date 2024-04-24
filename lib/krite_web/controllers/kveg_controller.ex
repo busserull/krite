@@ -4,6 +4,12 @@ defmodule KriteWeb.KvegController do
   alias Krite.Accounts
   alias KriteWeb.AccountAuth
 
+  def index(conn, _params) do
+    IO.inspect(conn)
+
+    render(conn, :index, kveg: conn.assigns.current_kveg)
+  end
+
   def new(conn, _params) do
     render(conn, :new, email: nil, error_message: nil)
   end

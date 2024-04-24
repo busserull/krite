@@ -35,6 +35,12 @@ defmodule KriteWeb.Router do
     resources "/purchases", PurchaseController
   end
 
+  scope "/kveg", KriteWeb do
+    pipe_through [:browser, :require_authenticated_kveg]
+
+    get "/", KvegController, :index
+  end
+
   scope "/budeie", KriteWeb do
     pipe_through :browser
 
