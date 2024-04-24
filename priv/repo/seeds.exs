@@ -10,6 +10,8 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
+alias Krite.Accounts.Kveg
+
 defmodule SeedUtil do
   alias Krite.Accounts.{Kveg, Deposit}
   alias Krite.Products.{Item, Barcode, Stock}
@@ -79,20 +81,18 @@ end
 alias Krite.Repo
 alias Krite.Accounts.Budeie
 
-# # Wipe database
-# ["items", "kveg_accounts", "budeie_accounts"]
-# |> Enum.map(&"truncate #{&1} restart identity cascade")
-# |> Enum.each(&Ecto.Adapters.SQL.query!(Krite.Repo, &1))
-
 # Insert kveg
 
-inserted_kveg =
-  [
-    {"Alice", "Example", "alice@example.com"},
-    {"Bob", "Example", "bob@example.com"}
-  ]
-  |> Enum.map(&SeedUtil.make_kveg/1)
-  |> Enum.map(&Repo.insert!(&1, []))
+inserted_kveg = 
+  ["alice", "bob", "charlie"]
+  |> Enum.map(fn name -> %{
+      firstname: String.capitalize(name),
+      lastname: "Example",
+      email: "#{name}@example.com",
+      password: "kveg"
+    } end)
+  |> Enum.map(fn changes -> Kveg.changeset(%Kveg{}, changes) end)
+  |> Enum.map(&Repo.insert! &1)
 
 # Insert product items
 
