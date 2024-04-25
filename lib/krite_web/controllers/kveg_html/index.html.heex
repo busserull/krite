@@ -1,7 +1,19 @@
-<.header>Welcome, <%= @current_kveg.firstname %></.header>
-Your balance is <%= @current_kveg.balance %> kr.
-<div style="height: 100px;"></div>
+<.header>Welcome, <%= @name %></.header>
+Your balance is <%= @balance %> kr.
+<div style="height: 100px;" class={if @has_sauna_pass, do: "blue", else: "red"}>
+  <%= if @has_sauna_pass do %>
+    You have a valid sauna pass. Ends at <%= @end_at %>.
+  <% else %>
+    Oh no! You don't have a sauna pass. Ended at <%= @end_at %>.
+  <% end %>
+</div>
 
-<pre>
-<%= inspect @kveg, pretty: true %>
-</pre>
+<style>
+  .red {
+    color: #ef315d;
+  }
+
+  .blue {
+    color: #5a4dd1;
+  }
+</style>

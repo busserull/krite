@@ -33,7 +33,7 @@ defmodule KriteWeb.AccountAuth do
     |> configure_session(renew: true)
     |> clear_session()
     |> put_session(:kveg_id, kveg.id)
-    |> redirect(to: ~p"/")
+    |> redirect(to: ~p"/kveg")
 
     # TODO: Return to kveg home page
   end

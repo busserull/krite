@@ -83,16 +83,22 @@ alias Krite.Accounts.Budeie
 
 # Insert kveg
 
-inserted_kveg = 
-  ["alice", "bob", "charlie"]
-  |> Enum.map(fn name -> %{
+inserted_kveg =
+  [{"alice", 3}, {"bob", -10}, {"charlie", 10 * 60 * 24}]
+  |> Enum.map(fn {name, sauna_valid_minutes} ->
+    {name, DateTime.add(DateTime.utc_now(), sauna_valid_minutes, :minute)}
+  end)
+  |> Enum.map(fn {name, sauna_end} ->
+    %{
       firstname: String.capitalize(name),
       lastname: "Example",
       email: "#{name}@example.com",
-      password: "kveg"
-    } end)
+      password: "kveg",
+      sauna_pass_end: sauna_end
+    }
+  end)
   |> Enum.map(fn changes -> Kveg.changeset(%Kveg{}, changes) end)
-  |> Enum.map(&Repo.insert! &1)
+  |> Enum.map(&Repo.insert!(&1))
 
 # Insert product items
 
