@@ -14,17 +14,17 @@ defmodule KriteWeb.PurchaseController do
     render(conn, :new, changeset: changeset)
   end
 
-  def create(conn, %{"purchase" => purchase_params}) do
-    case Purchases.create_purchase(purchase_params) do
-      {:ok, purchase} ->
-        conn
-        |> put_flash(:info, "Purchase created successfully.")
-        |> redirect(to: ~p"/purchases/#{purchase}")
+  # def create(conn, %{"purchase" => purchase_params}) do
+  #   case Purchases.create_purchase(purchase_params) do
+  #     {:ok, purchase} ->
+  #       conn
+  #       |> put_flash(:info, "Purchase created successfully.")
+  #       |> redirect(to: ~p"/purchases/#{purchase}")
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :new, changeset: changeset)
-    end
-  end
+  #     {:error, %Ecto.Changeset{} = changeset} ->
+  #       render(conn, :new, changeset: changeset)
+  #   end
+  # end
 
   def show(conn, %{"id" => id}) do
     purchase = Purchases.get_purchase!(id)

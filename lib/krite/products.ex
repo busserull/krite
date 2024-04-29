@@ -21,7 +21,7 @@ defmodule Krite.Products do
 
   """
   def list_items do
-    Repo.all(Item)
+    Repo.all(from i in Item, preload: [:barcodes])
   end
 
   @doc """

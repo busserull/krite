@@ -1,15 +1,39 @@
-<div hidden>
-  <h1>Hello world!</h1>
+<.header>Your balance is <%= @balance %> kr</.header>
 
-  <div>Your balance is <%= @balance %> kr</div>
-  Buy things at Dypet!
-  <button phx-click="add-random">
-    Add random item
-  </button>
-</div>
+<form phx-change="search">
+  <.input
+    type="text"
+    name="search"
+    value={@search}
+    placeholder="Search product"
+    autocomplete="off"
+    autofocus="on"
+    phx-debounce="20"
+  />
+</form>
 
-<.header>Things that you buy (you dirty dog):</.header>
-
-<ul :for={item <- @cart}>
-  <li><%= item %></li>
+<.header>Search results:</.header>
+<ul>
+  <li :for={item <- @search_list}>
+    <div
+      phx-click="add-item"
+      phx-value-item-id={item.id}
+      style="height: 20px; margin: 5px 0; background-color: #ececec;"
+    >
+      <%= item.name %>
+    </div>
+  </li>
 </ul>
+
+<.header>Your cart:</.header>
+<ul :for={{id, {name, count}} <- @cart}>
+  <li>
+    <%= name %> (<%= count %>)
+    <div phx-click="add-item" phx-value-item-id={id}>+</div>
+    <div phx-click="sub-item" phx-value-item-id={id}>-</div>
+  </li>
+</ul>
+
+<.button :if={@cart} phx-click="checkout">
+  Check out
+</.button>

@@ -4,9 +4,9 @@ defmodule Krite.Purchases do
   """
 
   import Ecto.Query, warn: false
+  alias Krite.Purchases.{Purchase, PurchaseItem}
+  alias Krite.Products.Item
   alias Krite.Repo
-
-  alias Krite.Purchases.Purchase
 
   @doc """
   Returns the list of purchases.
@@ -49,9 +49,32 @@ defmodule Krite.Purchases do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_purchase(attrs \\ %{}) do
-    %Purchase{}
-    |> Purchase.changeset(attrs)
+  def create_purchase(kveg_id, items_id_and_count) do
+    item_ids = Enum.map(items_id_and_count, fn {id, _count} -> id end)
+
+    prices_at_purchase =
+      from(i in Item,
+        where: i.id in ^item_ids
+      )
+      |> Repo.all()
+      |> Map.new(fn item -> {item.id, item.price} end)
+
+    items =
+      items_id_and_count
+      |> Enum.map(fn {id, count} ->
+        PurchaseItem.changeset(%PurchaseItem{item_id: id}, %{
+          unit_price_at_purchase: Map.fetch!(prices_at_purchase, id),
+          count: count
+        })
+      end)
+
+    total_cost =
+      Enum.reduce(items_id_and_count, 0, fn {id, count}, acc ->
+        acc + count * Map.fetch!(prices_at_purchase, id)
+      end)
+
+    %Purchase{kveg_id: kveg_id}
+    |> Ecto.Changeset.change(items: items, total_cost: total_cost)
     |> Repo.insert()
   end
 
