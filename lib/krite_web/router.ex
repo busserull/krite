@@ -38,7 +38,7 @@ defmodule KriteWeb.Router do
   scope "/kveg", KriteWeb do
     pipe_through [:browser, :require_authenticated_kveg]
 
-    get "/", KvegController, :index
+    live "/", KvegLive
   end
 
   scope "/budeie", KriteWeb do

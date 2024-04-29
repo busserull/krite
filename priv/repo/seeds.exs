@@ -12,29 +12,18 @@
 
 alias Krite.Accounts.Kveg
 
-defmodule SeedUtil do
-  alias Krite.Accounts.{Kveg, Deposit}
+defmodule Helpers do
+  alias Krite.Accounts.Deposit
   alias Krite.Products.{Item, Barcode, Stock}
   alias Krite.Purchases.{Purchase, PurchaseItem}
 
-  def make_kveg({firstname, lastname, email}) do
-    Kveg.changeset(
-      %Kveg{},
-      %{
-        firstname: firstname,
-        lastname: lastname,
-        email: email
-      }
-    )
-  end
-
-  def make_deposit({kveg, amount}) do
-    Deposit.changeset(
-      %Deposit{kveg_id: kveg.id},
-      %{
-        amount: amount
-      }
-    )
+  def make_deposits({kveg, amounts}) do
+    Enum.map(amounts, fn amount ->
+      Deposit.changeset(
+        %Deposit{kveg_id: kveg.id},
+        %{amount: amount}
+      )
+    end)
   end
 
   def make_item({name, barcodes, price, stock}) do
@@ -60,16 +49,24 @@ defmodule SeedUtil do
     |> Ecto.Changeset.put_assoc(:stocks, stocks)
   end
 
-  def make_purchase({buyer, counts}, products) do
+  def make_purchases({buyer, all_counts}, products) do
+    all_counts
+    |> Enum.map(&make_one_purchase(buyer, &1, products))
+  end
+
+  def make_one_purchase(buyer, counts, products) do
     items =
-      counts
-      |> Enum.zip(products)
-      |> Enum.reject(fn {count, _product} -> count == 0 end)
-      |> Enum.map(fn {count, product} ->
-        PurchaseItem.changeset(%PurchaseItem{item_id: product.id}, %{
-          count: count,
-          unit_price_at_purchase: product.price
-        })
+      products
+      |> Enum.zip(counts)
+      |> Enum.reject(fn {_product, count} -> count == 0 end)
+      |> Enum.map(fn {product, count} ->
+        PurchaseItem.changeset(
+          %PurchaseItem{item_id: product.id},
+          %{
+            count: count,
+            unit_price_at_purchase: product.price
+          }
+        )
       end)
 
     %Purchase{kveg_id: buyer.id}
@@ -79,61 +76,78 @@ defmodule SeedUtil do
 end
 
 alias Krite.Repo
-alias Krite.Accounts.Budeie
+alias Krite.Accounts.{Budeie, Kveg, Deposit}
 
-# Insert kveg
+# Insert kveg: name, sauna pass expires
 
 inserted_kveg =
-  [{"alice", 3}, {"bob", -10}, {"charlie", 10 * 60 * 24}]
-  |> Enum.map(fn {name, sauna_valid_minutes} ->
-    {name, DateTime.add(DateTime.utc_now(), sauna_valid_minutes, :minute)}
-  end)
-  |> Enum.map(fn {name, sauna_end} ->
+  [
+    {"alice", ~N[2030-01-01 00:00:00]},
+    {"bob", ~N[2022-01-01 00:00:00]},
+    {"charlie", nil}
+  ]
+  |> Enum.map(fn {name, sauna_expires} ->
     %{
       firstname: String.capitalize(name),
       lastname: "Example",
       email: "#{name}@example.com",
       password: "kveg",
-      sauna_pass_end: sauna_end
+      sauna_pass_end: sauna_expires
     }
   end)
-  |> Enum.map(fn changes -> Kveg.changeset(%Kveg{}, changes) end)
-  |> Enum.map(&Repo.insert!(&1))
+  |> Enum.map(&Kveg.changeset(%Kveg{}, &1))
+  |> Enum.map(&Repo.insert!/1)
 
-# Insert product items
+# Insert deposits: alice, bob, charlie
 
-inserted_products =
-  [
-    {"Liquid Water", ["7012345678900", "7012345678905", "7012345678909"], 21, 50},
-    {"Viscous Air", ["6402345678901"], 25, 25},
-    {"Brunder Brau", ["4402345678901"], 12, 300}
-  ]
-  |> Enum.map(&SeedUtil.make_item/1)
-  |> Enum.map(&Repo.insert!(&1, []))
-
-# Make deposits
-
-inserted_kveg
-|> Stream.cycle()
-|> Enum.zip([250, 175, 312, 456, 36, 73])
-|> Enum.map(&SeedUtil.make_deposit/1)
-|> Enum.each(&Repo.insert!(&1, []))
-
-# Make purchases
-purchase_counts = [
-  [1, 0, 0],
-  [3, 2, 0],
-  [4, 1, 3],
-  [0, 5, 0],
-  [1, 0, 3],
-  [0, 2, 6]
+deposits = [
+  [1000, 200, 250],
+  [],
+  [350]
 ]
 
 inserted_kveg
-|> Stream.cycle()
-|> Enum.zip(purchase_counts)
-|> Enum.map(&SeedUtil.make_purchase(&1, inserted_products))
-|> Enum.each(&Repo.insert!(&1, []))
+|> Enum.zip(deposits)
+|> Enum.flat_map(&Helpers.make_deposits/1)
+|> Enum.each(&Repo.insert!/1)
+
+# Insert product items: name, barcodes, price, stock
+
+inserted_products =
+  [
+    {"Timtam", ["8886015430139", "9310072030814"], 20, 100},
+    {"Vegemite", ["9300650008946"], 10, 50},
+    {"Milk", [], 25, 500}
+  ]
+  |> Enum.map(&Helpers.make_item/1)
+  |> Enum.map(&Repo.insert!/1)
+
+# Make purchases: [timtam, vegemite, milk] count
+alice_purchases = [
+  [2, 0, 0],
+  [0, 1, 0],
+  [3, 0, 6],
+  [0, 0, 1],
+  [0, 1, 2],
+  [1, 1, 1]
+]
+
+bob_purchases = [
+  [4, 1, 0]
+]
+
+charlie_pruchases = []
+
+purchases = [
+  alice_purchases,
+  bob_purchases,
+  charlie_pruchases
+]
+
+inserted_kveg
+|> Enum.zip(purchases)
+|> Enum.flat_map(&Helpers.make_purchases(&1, inserted_products))
+|> Enum.map(&Repo.insert!/1)
 
 # Make budeie accounts
 %Budeie{}

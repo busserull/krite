@@ -1,0 +1,15 @@
+<div hidden>
+  <h1>Hello world!</h1>
+
+  <div>Your balance is <%= @balance %> kr</div>
+  Buy things at Dypet!
+  <button phx-click="add-random">
+    Add random item
+  </button>
+</div>
+
+<.header>Things that you buy (you dirty dog):</.header>
+
+<ul :for={item <- @cart}>
+  <li><%= item %></li>
+</ul>
