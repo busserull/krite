@@ -38,39 +38,39 @@ defmodule Krite.Purchases do
   def get_purchase!(id), do: Repo.get!(Purchase, id)
 
   @doc """
-  Creates a purchase.
+  Creates a purchase, and associates it to the Kveg determined
+  by `kveg_id`. The `cart` is a mapping from `Item` id to the
+  number of purchased items of that type.
 
   ## Examples
 
-      iex> create_purchase(%{field: value})
+      iex> create_purchase(kveg_id, %{1 => 6, 2 => 4})
       {:ok, %Purchase{}}
 
-      iex> create_purchase(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
   """
-  def create_purchase(kveg_id, items_id_and_count) do
-    item_ids = Enum.map(items_id_and_count, fn {id, _count} -> id end)
-
+  def create_purchase(kveg_id, cart) do
     prices_at_purchase =
       from(i in Item,
-        where: i.id in ^item_ids
+        where: i.id in ^Map.keys(cart)
       )
       |> Repo.all()
       |> Map.new(fn item -> {item.id, item.price} end)
 
+    cart_with_unit_prices =
+      Map.new(cart, fn {id, count} -> {id, {count, Map.fetch!(prices_at_purchase, id)}} end)
+
     items =
-      items_id_and_count
-      |> Enum.map(fn {id, count} ->
+      cart_with_unit_prices
+      |> Enum.map(fn {id, {count, unit_price}} ->
         PurchaseItem.changeset(%PurchaseItem{item_id: id}, %{
-          unit_price_at_purchase: Map.fetch!(prices_at_purchase, id),
+          unit_price_at_purchase: unit_price,
           count: count
         })
       end)
 
     total_cost =
-      Enum.reduce(items_id_and_count, 0, fn {id, count}, acc ->
-        acc + count * Map.fetch!(prices_at_purchase, id)
+      Enum.reduce(cart_with_unit_prices, 0, fn {_id, {count, unit_price}}, acc ->
+        acc + count * unit_price
       end)
 
     %Purchase{kveg_id: kveg_id}

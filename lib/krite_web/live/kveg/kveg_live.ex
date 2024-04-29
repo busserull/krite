@@ -68,11 +68,9 @@ defmodule KriteWeb.KvegLive do
   end
 
   def handle_event("checkout", _params, socket) do
-    items_id_count =
-      socket.assigns.cart
-      |> Enum.map(fn {id, {_name, count}} -> {id, count} end)
+    cart = Map.new(socket.assigns.cart, fn {id, {_name, count}} -> {id, count} end)
 
-    {:ok, purchase} = Purchases.create_purchase(socket.assigns.kveg_id, items_id_count)
+    {:ok, purchase} = Purchases.create_purchase(socket.assigns.kveg_id, cart)
 
     socket =
       socket
