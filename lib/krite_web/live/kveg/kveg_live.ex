@@ -25,7 +25,7 @@ defmodule KriteWeb.KvegLive do
   end
 
   def handle_event("search", %{"search" => ""}, socket) do
-    {:noreply, assign(socket, :search_list, [])}
+    {:noreply, assign(socket, search: "", search_list: [])}
   end
 
   def handle_event("search", %{"search" => term}, socket) do
@@ -35,7 +35,12 @@ defmodule KriteWeb.KvegLive do
       socket.assigns.catalog
       |> Enum.filter(&Regex.match?(regex, &1.name))
 
-    {:noreply, assign(socket, :search_list, search_list)}
+    socket =
+      socket
+      |> assign(:search_list, search_list)
+      |> assign(:search, term)
+
+    {:noreply, socket}
   end
 
   def handle_event("add-item", %{"item-id" => id}, socket) do
@@ -76,7 +81,7 @@ defmodule KriteWeb.KvegLive do
       socket
       |> update(:balance, &(&1 - purchase.total_cost))
       |> assign(:search_list, [])
-      |> assign(:search, " ")
+      |> assign(:search, "")
       |> assign(:cart, %{})
 
     {:noreply, socket}

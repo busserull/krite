@@ -7,7 +7,6 @@
     value={@search}
     placeholder="Search product"
     autocomplete="off"
-    autofocus="on"
     phx-debounce="20"
   />
 </form>
@@ -33,6 +32,10 @@
     <div phx-click="sub-item" phx-value-item-id={id}>-</div>
   </li>
 </ul>
+
+<div :if={@search != "" && @search_list == []}>
+  Oh no, we found no such items!
+</div>
 
 <.button :if={@cart} phx-click="checkout">
   Check out
