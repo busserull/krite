@@ -15,6 +15,7 @@ defmodule Krite.Accounts.Kveg do
     field :subtitle, :string
 
     field :sauna_pass_end, :naive_datetime
+    field :sauna_pass_reminder, :boolean, default: true
 
     field :balance, :integer, default: 0, virtual: true
 
@@ -34,36 +35,40 @@ defmodule Krite.Accounts.Kveg do
       :firstname,
       :lastname,
       :subtitle,
-      :sauna_pass_end
+      :sauna_pass_end,
+      :sauna_pass_reminder
     ])
     |> validate_required([
       :email,
-      :password,
       :active,
       :firstname,
       :lastname
     ])
+    |> enable_reminder_when_changing_sauna_pass()
     |> downcase_email()
     |> hash_password()
+    |> validate_required([:password_hash])
+  end
+
+  defp enable_reminder_when_changing_sauna_pass(changeset) do
+    if changeset.valid? && get_change(changeset, :sauna_pass_end) do
+      changeset
+      |> put_change(:sauna_pass_reminder, true)
+    else
+      changeset
+    end
   end
 
   defp downcase_email(changeset) do
-    if changeset.valid? do
-      email =
-        changeset
-        |> get_change(:email)
-        |> String.downcase()
-
-      changeset
-      |> put_change(:email, email)
+    if email = changeset.valid? && get_change(changeset, :email) do
+      put_change(changeset, :email, String.downcase(email))
     else
       changeset
     end
   end
 
   defp hash_password(changeset) do
-    if changeset.valid? do
-      password = get_change(changeset, :password)
+    if password = changeset.valid? && get_change(changeset, :password) do
       hash = Argon2.hash_pwd_salt(password)
 
       changeset

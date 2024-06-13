@@ -115,25 +115,26 @@ inserted_kveg
 
 inserted_products =
   [
-    {"Timtam", ["8886015430139", "9310072030814"], 20, 100},
-    {"Vegemite", ["9300650008946"], 10, 50},
-    {"Milk", [], 25, 500}
+    {"Kvikk-Lunsj", ["1234567891011", "1234567891012"], 20, 100},
+    {"Brunost", ["1234567891013"], 10, 50},
+    {"Melk", [], 25, 500},
+    {"Knekkebrød", ["1234567891014"], 26, 78}
   ]
   |> Enum.map(&Helpers.make_item/1)
   |> Enum.map(&Repo.insert!/1)
 
-# Make purchases: [timtam, vegemite, milk] count
+# Make purchases: [Kvikk-Lunsj, Brunost, Melk, Knekkebrød] count
 alice_purchases = [
-  [2, 0, 0],
-  [0, 1, 0],
-  [3, 0, 6],
-  [0, 0, 1],
-  [0, 1, 2],
-  [1, 1, 1]
+  [2, 0, 0, 0],
+  [0, 1, 0, 1],
+  [3, 0, 6, 2],
+  [0, 0, 1, 0],
+  [0, 1, 2, 0],
+  [1, 1, 1, 1]
 ]
 
 bob_purchases = [
-  [4, 1, 0]
+  [4, 1, 0, 3]
 ]
 
 charlie_pruchases = []
