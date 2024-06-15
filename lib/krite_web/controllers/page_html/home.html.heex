@@ -46,9 +46,9 @@
         fill="#FD4F00"
       />
     </svg>
-    <h1 class="text-brand mt-10 flex items-center text-sm font-semibold leading-6">
+    <h1 class="text-orange-600 mt-10 flex items-center text-sm font-semibold leading-6">
       Phoenix Framework
-      <small class="bg-brand/5 text-[0.8125rem] ml-3 rounded-full px-2 font-medium leading-6">
+      <small class="bg-orange-100 text-[0.8125rem] ml-3 rounded-full px-2 font-medium leading-6">
         v<%= Application.spec(:phoenix, :vsn) %>
       </small>
     </h1>
@@ -62,7 +62,7 @@
   </div>
 </div>
 
-<div :if={!@current_budeie && !@current_kveg} class="px-4 sm:px-6">
+<div :if={!@budeie && !@kveg} class="px-4 sm:px-6">
   <.link href={~p"/log-in"}>
     Log in as Kveg
   </.link>
@@ -73,13 +73,13 @@
 </div>
 
 <div class="px-4 sm:px-6">
-  <.header :if={@current_budeie}>
+  <.header :if={@budeie}>
     <.link href={~p"/budeie/log-out"} method="delete">
       Log out Budeie
     </.link>
   </.header>
 
-  <.header :if={@current_kveg}>
+  <.header :if={@kveg}>
     We have a kveg
   </.header>
 
