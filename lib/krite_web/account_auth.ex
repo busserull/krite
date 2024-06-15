@@ -56,27 +56,22 @@ defmodule KriteWeb.AccountAuth do
   so that a kveg and budeie will not be able to log in
   at the same time in the same session.
   """
-  def fetch_current_account(conn, _opts) do
+  def fetch_logged_in_account(conn, _opts) do
     conn
-    |> nil_accounts()
+    |> assign(:budeie, nil)
+    |> assign(:kveg, nil)
     |> maybe_fetch_budeie_or_kveg()
-  end
-
-  defp nil_accounts(conn) do
-    conn
-    |> assign(:current_budeie, nil)
-    |> assign(:current_kveg, nil)
   end
 
   defp maybe_fetch_budeie_or_kveg(conn) do
     cond do
       budeie_id = get_session(conn, :budeie_id) ->
         budeie = Accounts.get_budeie!(budeie_id)
-        assign(conn, :current_budeie, budeie)
+        assign(conn, :budeie, budeie)
 
       kveg_id = get_session(conn, :kveg_id) ->
         kveg = Accounts.get_kveg!(kveg_id)
-        assign(conn, :current_kveg, kveg)
+        assign(conn, :kveg, kveg)
 
       true ->
         conn
@@ -87,7 +82,7 @@ defmodule KriteWeb.AccountAuth do
   Require that a budeie is logged in, otherwise redirect and halt the connection.
   """
   def require_authenticated_budeie(conn, _opts) do
-    if conn.assigns[:current_budeie] do
+    if conn.assigns[:budeie] do
       conn
     else
       # TODO: Maybe remove this flash altogether
@@ -102,7 +97,7 @@ defmodule KriteWeb.AccountAuth do
   Require that a kveg is logged in, otherwise redirect and halt the connection.
   """
   def require_authenticated_kveg(conn, _opts) do
-    if conn.assigns[:current_kveg] do
+    if conn.assigns[:kveg] do
       conn
     else
       conn
