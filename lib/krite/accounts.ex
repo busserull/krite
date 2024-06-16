@@ -7,6 +7,7 @@ defmodule Krite.Accounts do
   alias Krite.Repo
   alias Krite.Accounts.Kveg
   alias Krite.Accounts.Budeie
+  alias Krite.Purchases.Purchase
 
   @doc """
   Gets a single budeie.
@@ -68,7 +69,7 @@ defmodule Krite.Accounts do
   def get_kveg_by_email_and_password(email, password) when is_binary(email) do
     kveg = Repo.get_by(Kveg, email: email)
     if Kveg.valid_password?(kveg, password), do: kveg
-    end
+  end
 
   def get_kveg_by_email_and_password(_, _), do: nil
 
@@ -138,22 +139,30 @@ defmodule Krite.Accounts do
   end
 
   defp calculate_and_put_balance(kveg) do
-    kveg = Repo.preload(kveg, [:deposits, purchases: [:items]])
+    kveg =
+      kveg
+      |> Repo.preload([:deposits, purchases: [:items]])
+      |> Map.update!(:purchases, &calculate_all_purchase_totals/1)
 
     deposits =
-      kveg
-      |> Map.fetch!(:deposits)
+      kveg.deposits
       |> Enum.map(&Map.fetch!(&1, :amount))
       |> Enum.sum()
 
     spending =
-      kveg
-      |> Map.fetch!(:purchases)
-      |> Enum.map(&Map.fetch!(&1, :items))
-      |> List.flatten()
-      |> Enum.map(&(&1.unit_price_at_purchase * &1.count))
+      kveg.purchases
+      |> Enum.map(&Map.fetch!(&1, :total_cost))
       |> Enum.sum()
 
     Map.put(kveg, :balance, deposits - spending)
+  end
+
+  defp calculate_all_purchase_totals(purchases) do
+    Enum.map(purchases, &calculate_purchase_total/1)
+  end
+
+  defp calculate_purchase_total(%Purchase{items: items} = purchase) do
+    total_cost = Enum.reduce(items, 0, fn i, acc -> acc + i.count * i.unit_price_at_purchase end)
+    Map.put(purchase, :total_cost, total_cost)
   end
 end
