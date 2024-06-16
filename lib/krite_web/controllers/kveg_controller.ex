@@ -5,24 +5,15 @@ defmodule KriteWeb.KvegController do
   alias KriteWeb.AccountAuth
 
   def index(conn, _params) do
-    IO.inspect(conn)
+    sauna_pass_valid =
+      case conn.assigns.kveg.sauna_pass_end do
+        nil -> false
+        pass_end -> NaiveDateTime.after?(pass_end, NaiveDateTime.utc_now())
+      end
 
-    name = conn.assigns.current_kveg.firstname
-    balance = conn.assigns.current_kveg.balance
-    has_sauna_pass = has_sauna_pass?(conn.assigns.current_kveg.sauna_pass_end)
+    remind_sauna_pass = conn.assigns.kveg.sauna_pass_reminder && !sauna_pass_valid
 
-    {:ok, end_at} =
-      conn.assigns.current_kveg.sauna_pass_end
-      |> Timex.Timezone.convert("UTC")
-      |> Timex.Timezone.convert("Europe/Oslo")
-      |> Timex.format("%H:%M:%S", :strftime)
-
-    render(conn, :index,
-      name: name,
-      balance: balance,
-      has_sauna_pass: has_sauna_pass,
-      end_at: end_at
-    )
+    render(conn, :index, sauna_pass_valid: sauna_pass_valid, remind_sauna_pass: remind_sauna_pass)
   end
 
   def new(conn, _params) do
@@ -47,9 +38,15 @@ defmodule KriteWeb.KvegController do
     |> redirect(to: ~p"/")
   end
 
-  defp has_sauna_pass?(nil), do: false
+  def history(conn, _params) do
+    render(conn, :history)
+  end
 
-  defp has_sauna_pass?(sauna_pass_end) do
-    NaiveDateTime.after?(sauna_pass_end, NaiveDateTime.utc_now())
+  def sauna_pass_unremind(conn, _params) do
+    conn.assigns[:kveg]
+    |> Accounts.update_kveg(%{sauna_pass_reminder: false})
+
+    conn
+    |> redirect(to: ~p"/kveg")
   end
 end

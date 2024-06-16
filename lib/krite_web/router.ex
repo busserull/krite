@@ -3,7 +3,7 @@ defmodule KriteWeb.Router do
 
   import KriteWeb.AccountAuth,
     only: [
-      fetch_current_account: 2,
+      fetch_logged_in_account: 2,
       require_authenticated_budeie: 2,
       require_authenticated_kveg: 2
     ]
@@ -15,7 +15,7 @@ defmodule KriteWeb.Router do
     plug :put_root_layout, html: {KriteWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :fetch_current_account
+    plug :fetch_logged_in_account
   end
 
   pipeline :api do
@@ -38,7 +38,12 @@ defmodule KriteWeb.Router do
   scope "/kveg", KriteWeb do
     pipe_through [:browser, :require_authenticated_kveg]
 
-    live "/", KvegLive
+    get "/", KvegController, :index
+
+    post "/sauna-pass-unremind", KvegController, :sauna_pass_unremind
+
+    # live "/", KvegLive
+    get "/history", KvegController, :history
   end
 
   scope "/budeie", KriteWeb do

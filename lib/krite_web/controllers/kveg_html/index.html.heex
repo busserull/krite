@@ -1,19 +1,46 @@
-<.header>Welcome, <%= @name %></.header>
-Your balance is <%= @balance %> kr.
-<div style="height: 100px;" class={if @has_sauna_pass, do: "blue", else: "red"}>
-  <%= if @has_sauna_pass do %>
-    You have a valid sauna pass. Ends at <%= @end_at %>.
-  <% else %>
-    Oh no! You don't have a sauna pass. Ended at <%= @end_at %>.
-  <% end %>
-</div>
+<header class="mb-5 pb-5 border-solid border-b border-b-nat-400 text-nat-700 flex flex-col sm:flex-row justify-between items-start gap-3">
+  <h1 class="text-4xl">
+    <%= @kveg.firstname %> <%= @kveg.lastname %>
+  </h1>
 
-<style>
-  .red {
-    color: #ef315d;
-  }
+  <div
+    :if={@sauna_pass_valid}
+    class="border border-teal-500 rounded-md py-2 bg-teal-100 text-teal-500 flex flex-row justify-between items-center px-4"
+  >
+    <.icon name="hero-check-circle" class="mr-2" />
+    <div class="font-semibold">
+      Sauna pass valid
+    </div>
+  </div>
+</header>
 
-  .blue {
-    color: #5a4dd1;
-  }
-</style>
+<.sauna_pass_reminder :if={@remind_sauna_pass} />
+
+<section class="flex flex-col sm:flex-row justify-between items-center gap-3">
+  <.money_card balance={@kveg.balance} />
+
+  <div class="flex flex-col gap-3 w-3/4 sm:w-auto">
+    <.action to={~p"/"} primary={false}>
+      Rent things at Låven<.icon name="hero-chevron-right" class="mx-2" />
+    </.action>
+    <.action to={~p"/"}>
+      Buy things at Dypet<.icon name="hero-chevron-right" class="relative top-[1px]" />
+    </.action>
+  </div>
+</section>
+
+<.split>Or</.split>
+
+<ul class="grid grid-cols-1 sm:grid-cols-2 grid-flow-row gap-x-12 w-5/6 mx-auto text-lg text-blue-800 hover:cursor-pointer underline underline-offset-4">
+  <li>Top up your account</li>
+  <li>View your purchasing history</li>
+  <li>Change your account details</li>
+  <li>Play a game of Rose</li>
+  <li>See Dypet statistics</li>
+</ul>
+
+<.split>Debug</.split>
+
+<pre>
+<%= inspect @kveg, pretty: true %>
+</pre>
