@@ -11,16 +11,18 @@ defmodule KriteWeb.ShopLive do
     socket =
       socket
       |> assign(:kveg, kveg)
-      |> assign(:search_list, [])
+      |> assign(:search_list, [
+        %{id: 1, name: "Smooth talker", price: 200},
+        %{id: 2, name: "Womanizer", price: 90000}
+      ])
       |> assign(:search, "")
-      # |> assign(:cart, [{1, "Kvikk-Lunsj", 2}, {3, "Melk", 3}])
-      |> assign(:cart, %{1 => {"Kvikk-Lunsj", 2}, 3 => {"Melk", 3}})
+      |> assign(:cart, [])
       |> assign(:total, 0)
 
     socket =
       if connected?(socket) do
         catalog = Products.list_items()
-        assign(socket, catalog: catalog, search_list: [])
+        assign(socket, catalog: catalog, search_list: catalog)
       else
         socket
       end
@@ -50,9 +52,17 @@ defmodule KriteWeb.ShopLive do
   def handle_event("add-item", %{"item-id" => id}, socket) do
     item = get_item(socket, id)
 
+    old_cart = socket.assigns.cart
+
+    cart =
+      case Enum.find_index(old_cart, fn {i, _count} -> i.id == item.id end) do
+        nil -> [{item, 1} | old_cart]
+        index -> List.update_at(old_cart, index, fn {i, count} -> {i, count + 1} end)
+      end
+
     socket =
       socket
-      |> add_item_to_cart(item)
+      |> assign(:cart, cart)
       |> update(:total, &(&1 + item.price))
 
     {:noreply, socket}
@@ -60,19 +70,21 @@ defmodule KriteWeb.ShopLive do
 
   def handle_event("sub-item", %{"item-id" => id}, socket) do
     item = get_item(socket, id)
-    socket = update(socket, :total, &(&1 - item.price))
 
-    case Map.get(socket.assigns.cart, item.id) do
-      {_name, 1} ->
-        update(socket, :cart, &Map.delete(&1, item.id))
+    old_cart = socket.assigns.cart
 
-      _ ->
-        update(
-          socket,
-          :cart,
-          &Map.update!(&1, item.id, fn {name, count} -> {name, count - 1} end)
-        )
-    end
+    item_index = Enum.find_index(old_cart, fn {i, _count} -> i.id == item.id end)
+
+    cart =
+      case Enum.at(old_cart, item_index) do
+        {_item, 1} -> List.delete_at(old_cart, item_index)
+        {item, count} -> List.update_at(old_cart, item_index, fn _ -> {item, count - 1} end)
+      end
+
+    socket =
+      socket
+      |> assign(:cart, cart)
+      |> update(:total, &(&1 - item.price))
 
     {:noreply, socket}
   end
@@ -97,16 +109,5 @@ defmodule KriteWeb.ShopLive do
       {id, ""} -> Enum.find(socket.assigns.catalog, &(&1.id == id))
       _ -> nil
     end
-  end
-
-  defp add_item_to_cart(socket, item) do
-    # TODO: inline this
-    default = {item.name, 1}
-
-    update(
-      socket,
-      :cart,
-      &Map.update(&1, item.id, default, fn {name, count} -> {name, count + 1} end)
-    )
   end
 end
