@@ -1,42 +1,91 @@
-<.header>Your balance is <%= @balance %> kr</.header>
+<div
+  :if={@search != ""}
+  class="z-10 absolute w-screen h-screen bg-nat-900 top-0 left-0 opacity-60"
+>
+</div>
 
-<form phx-change="search">
-  <.input
-    type="text"
-    name="search"
-    value={@search}
-    placeholder="Search product"
-    autocomplete="off"
-    phx-debounce="20"
-  />
-</form>
+<div class="z-20 relative">
+  <form phx-change="search">
+    <.input
+      type="text"
+      name="search"
+      value={@search}
+      placeholder="Search product"
+      autocomplete="off"
+      phx-debounce="20"
+    />
+  </form>
 
-<.header>Search results:</.header>
+  <div :if={@search != ""} class="flex flex-row justify-center">
+    <div class="absolute w-3/4 border rounded-md border-nat-600 py-3 px-8 mt-2 bg-white font-medium text-nat-800">
+      <div :if={@search_list == []} class="text-nat-500 italic py-1">
+        We didn't find any items, try searching for something else
+      </div>
+
+      <ul :if={@search_list != []}>
+        <li
+          :for={item <- Enum.take(@search_list, 3)}
+          phx-click="add-item"
+          phx-value-item-id={item.id}
+          class="p-2 border-b border-nat-400 even:bg-nat-50 last:border-none hover:cursor-pointer flex flex-row justify-between"
+        >
+          <div><%= item.name %></div>
+          <div><%= item.price %> kr</div>
+        </li>
+
+        <li :if={Enum.count(@search_list) > 3} class="p-1 text-center tracking-widest">
+          ...
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<.split :if={@cart != %{}}>Your cart</.split>
+<!-- <div :if={@cart == %{}} class="w-full text-center font-medium italic text-nat-500 text-lg"> -->
+  <!-- ...is empty -->
+<!-- </div> -->
 <ul>
-  <li :for={item <- @search_list}>
-    <div
-      phx-click="add-item"
-      phx-value-item-id={item.id}
-      style="height: 20px; margin: 5px 0; background-color: #ececec;"
-    >
-      <%= item.name %>
+  <li
+    :for={{id, {name, count}} <- @cart}
+    class="flex flex-row justify-between items-center even:bg-nat-50 p-3"
+  >
+    <div>
+      <span class="text-nat-800 text-lg font-medium"><%= name %></span>
+      <span class="text-nat-500">(<%= count %>)</span>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 text-blue-600">
+      <div
+        phx-click="sub-item"
+        phx-value-item-id={id}
+        class="bg-white border border-blue-600 rounded-full p-2 flex justify-center items-center hover:cursor-pointer"
+      >
+        <.icon name="hero-minus" />
+      </div>
+      <div
+        phx-click="add-item"
+        phx-value-item-id={id}
+        class="bg-white border border-blue-600 rounded-full p-2 flex justify-center items-center hover:cursor-pointer"
+      >
+        <.icon name="hero-plus" />
+      </div>
     </div>
   </li>
 </ul>
 
-<.header>Your cart:</.header>
-<ul :for={{id, {name, count}} <- @cart}>
-  <li>
-    <%= name %> (<%= count %>)
-    <div phx-click="add-item" phx-value-item-id={id}>+</div>
-    <div phx-click="sub-item" phx-value-item-id={id}>-</div>
-  </li>
-</ul>
+<.split :if={@cart != %{}}>Total</.split>
+<div class="flex justify-between">
+  <div class="text-4xl w-1/5 flex justify-end items-end gap-2">
+    <%= @total %> <span class="text-2xl">kr</span>
+  </div>
 
-<div :if={@search != "" && @search_list == []}>
-  Oh no, we found no such items!
+  <.button phx-click="checkout">
+    Check out
+  </.button>
 </div>
 
-<.button :if={@cart} phx-click="checkout">
-  Check out
-</.button>
+<.split>Debug</.split>
+<pre>
+<%= inspect @cart, pretty: true %>
+</pre>

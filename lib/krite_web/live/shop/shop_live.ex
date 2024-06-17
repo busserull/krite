@@ -1,4 +1,4 @@
-defmodule KriteWeb.KvegLive do
+defmodule KriteWeb.ShopLive do
   use KriteWeb, :live_view
 
   alias Krite.Accounts
@@ -7,19 +7,23 @@ defmodule KriteWeb.KvegLive do
 
   def mount(_params, session, socket) do
     kveg = Accounts.get_kveg!(session["kveg_id"])
-    IO.puts(inspect(kveg, pretty: true))
-
-    catalog =
-      Products.list_items()
 
     socket =
       socket
-      |> assign(:kveg_id, kveg.id)
-      |> assign(:balance, kveg.balance)
-      |> assign(:catalog, catalog)
+      |> assign(:kveg, kveg)
       |> assign(:search_list, [])
       |> assign(:search, "")
-      |> assign(:cart, %{})
+      # |> assign(:cart, [{1, "Kvikk-Lunsj", 2}, {3, "Melk", 3}])
+      |> assign(:cart, %{1 => {"Kvikk-Lunsj", 2}, 3 => {"Melk", 3}})
+      |> assign(:total, 0)
+
+    socket =
+      if connected?(socket) do
+        catalog = Products.list_items()
+        assign(socket, catalog: catalog, search_list: [])
+      else
+        socket
+      end
 
     {:ok, socket}
   end
@@ -44,30 +48,31 @@ defmodule KriteWeb.KvegLive do
   end
 
   def handle_event("add-item", %{"item-id" => id}, socket) do
-    {item_id, ""} = Integer.parse(id)
+    item = get_item(socket, id)
 
-    item =
-      socket.assigns.catalog
-      |> Enum.find(fn product -> product.id == item_id end)
+    socket =
+      socket
+      |> add_item_to_cart(item)
+      |> update(:total, &(&1 + item.price))
 
-    {:noreply, add_item_to_cart(socket, item)}
+    {:noreply, socket}
   end
 
   def handle_event("sub-item", %{"item-id" => id}, socket) do
-    {item_id, ""} = Integer.parse(id)
+    item = get_item(socket, id)
+    socket = update(socket, :total, &(&1 - item.price))
 
-    socket =
-      case Map.get(socket.assigns.cart, item_id) do
-        {_name, 1} ->
-          update(socket, :cart, &Map.delete(&1, item_id))
+    case Map.get(socket.assigns.cart, item.id) do
+      {_name, 1} ->
+        update(socket, :cart, &Map.delete(&1, item.id))
 
-        _ ->
-          update(
-            socket,
-            :cart,
-            &Map.update!(&1, item_id, fn {name, count} -> {name, count - 1} end)
-          )
-      end
+      _ ->
+        update(
+          socket,
+          :cart,
+          &Map.update!(&1, item.id, fn {name, count} -> {name, count - 1} end)
+        )
+    end
 
     {:noreply, socket}
   end
@@ -85,6 +90,13 @@ defmodule KriteWeb.KvegLive do
       |> assign(:cart, %{})
 
     {:noreply, socket}
+  end
+
+  defp get_item(socket, item_id) do
+    case Integer.parse(item_id) do
+      {id, ""} -> Enum.find(socket.assigns.catalog, &(&1.id == id))
+      _ -> nil
+    end
   end
 
   defp add_item_to_cart(socket, item) do
