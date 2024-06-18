@@ -25,6 +25,8 @@ defmodule KriteWeb.Router do
   scope "/", KriteWeb do
     pipe_through :browser
 
+    live "/test", TestLive
+
     get "/", PageController, :home
 
     get "/log-in", KvegController, :new
