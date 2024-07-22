@@ -20,6 +20,56 @@ defmodule KriteWeb.CoreComponents do
   import KriteWeb.Gettext
 
   @doc """
+  Renders a title header.
+
+  ## Examples
+
+    <.title>
+      This is a title
+    </.title>
+  """
+  slot :inner_block, required: true
+  slot :side, required: false
+
+  def title(assigns) do
+    ~H"""
+    <header class="mb-5 pb-5 border-solid border-b border-b-nat-400 text-nat-700 flex flex-col sm:flex-row justify-between items-start gap-3">
+      <h1 class="text-4xl">
+        <%= render_slot(@inner_block) %>
+      </h1>
+
+      <div :if={@side}>
+        <%= render_slot(@side) %>
+      </div>
+    </header>
+    """
+  end
+
+  @doc """
+  Render a page split with a centered uppercase title.
+
+  ## Examples
+
+    <.split>
+      Your cart
+    </.split>
+  """
+  slot :inner_block, required: true
+  attr :class, :string, default: nil
+
+  def split(assigns) do
+    ~H"""
+    <div class={["w-full flex flex-row justify-around gap-8 my-4 relative", @class]}>
+      <div class="border-b border-nat-500 h-[1px] absolute top-1/2 w-full left-0"></div>
+
+      <div class="z-0 bg-main-bg relative px-5 font-medium text-lg text-nat-700 uppercase">
+        <%= render_slot(@inner_block) %>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
   Renders a modal.
 
   ## Examples
@@ -230,8 +280,9 @@ defmodule KriteWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
-        "text-sm font-semibold leading-6 text-white active:text-white/80",
+        "bg-blue-600 text-white hover:bg-blue-500 px-6 py-4 rounded-full text-lg",
+        "font-semibold leading-6 flex flex-row gap-2 justify-center items-center",
+        "hover:cursor-pointer transition-colors",
         @class
       ]}
       {@rest}
@@ -376,10 +427,9 @@ defmodule KriteWeb.CoreComponents do
         id={@id}
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
         class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
-          "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
+          "mt-2 block w-full rounded-full px-[3.5%] text-nat-800 focus:ring-0 font-medium",
+          "phx-no-feedback:border-nat-500 phx-no-feedback:focus:border-nat-400",
+          @errors != [] && "border-pink-400 focus:border-pink-400"
         ]}
         {@rest}
       />
@@ -396,7 +446,7 @@ defmodule KriteWeb.CoreComponents do
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
+    <label for={@for} class="mt-3 block text-sm font-semibold leading-6 text-nat-700">
       <%= render_slot(@inner_block) %>
     </label>
     """
@@ -409,7 +459,7 @@ defmodule KriteWeb.CoreComponents do
 
   def error(assigns) do
     ~H"""
-    <p class="mt-3 flex gap-3 text-sm leading-6 text-rose-600 phx-no-feedback:hidden">
+    <p class="mt-3 flex gap-3 text-md font-medium leading-6 text-rose-600 phx-no-feedback:hidden">
       <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
       <%= render_slot(@inner_block) %>
     </p>
@@ -417,31 +467,47 @@ defmodule KriteWeb.CoreComponents do
   end
 
   @doc """
-  Renders a header with title.
+  Renders a header.
   """
   attr :class, :string, default: nil
 
   slot :inner_block, required: true
-  slot :subtitle
-  slot :actions
 
   def header(assigns) do
     ~H"""
-    <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
-      <div>
-        <h1 class="text-lg font-semibold leading-8 text-zinc-800">
-          <%= render_slot(@inner_block) %>
-        </h1>
-        <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
-          <%= render_slot(@subtitle) %>
-        </p>
-      </div>
-      <div class="flex-none"><%= render_slot(@actions) %></div>
+    <header class={["mb-4 py-2 border-b-stone-200 border-solid border-b", @class]}>
+      <h1 class="text-4xl"><%= render_slot(@inner_block) %></h1>
     </header>
     """
   end
 
-  @doc ~S"""
+  @doc """
+  Renders a header with title.
+  """
+
+  # attr :class, :string, default: nil
+
+  # slot :inner_block, required: true
+  # slot :subtitle
+  # slot :actions
+
+  # def header(assigns) do
+  #   ~H"""
+  #   <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
+  #     <div>
+  #       <h1 class="text-lg font-semibold leading-8 text-zinc-800">
+  #         <%= render_slot(@inner_block) %>
+  #       </h1>
+  #       <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
+  #         <%= render_slot(@subtitle) %>
+  #       </p>
+  #     </div>
+  #     <div class="flex-none"><%= render_slot(@actions) %></div>
+  #   </header>
+  #   """
+  # end
+
+  @doc """
   Renders a table with generic styling.
 
   ## Examples

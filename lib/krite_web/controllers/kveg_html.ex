@@ -73,28 +73,14 @@ defmodule KriteWeb.KvegHTML do
     <a
       href={@to}
       class={[
-        (@primary && "bg-blue-600 text-blue-50 hover:bg-blue-500") ||
+        (@primary && "bg-blue-600 text-white hover:bg-blue-500") ||
           "border-2 border-blue-600 text-blue-600 hover:text-blue-400 hover:border-blue-400",
-        "px-6 py-4 rounded-full text-xl font-semibold flex flex-row gap-2
+        "px-6 py-4 rounded-full text-xl font-semibold flex flex-row gap-2 leading-6
         justify-center items-center hover:cursor-pointer transition-colors"
       ]}
     >
       <%= render_slot(@inner_block) %>
     </a>
-    """
-  end
-
-  slot :inner_block, required: true
-
-  def split(assigns) do
-    ~H"""
-    <div class="w-full flex flex-row justify-around gap-8 my-4 relative">
-      <div class="border-b border-nat-500 h-[1px] absolute top-1/2 w-full left-0"></div>
-
-      <div class="bg-main-bg relative px-5 font-medium text-lg text-stone-600 uppercase">
-        <%= render_slot(@inner_block) %>
-      </div>
-    </div>
     """
   end
 end

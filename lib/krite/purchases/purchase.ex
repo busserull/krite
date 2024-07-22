@@ -8,7 +8,7 @@ defmodule Krite.Purchases.Purchase do
     belongs_to :kveg, Kveg
     has_many :items, PurchaseItem
 
-    field :total_cost, :integer, default: 0, virtual: true
+    field :total_cost, :integer, virtual: true
 
     timestamps(type: :utc_datetime)
   end

@@ -1,18 +1,15 @@
-<header class="mb-5 pb-5 border-solid border-b border-b-nat-400 text-nat-700 flex flex-col sm:flex-row justify-between items-start gap-3">
-  <h1 class="text-4xl">
-    <%= @kveg.firstname %> <%= @kveg.lastname %>
-  </h1>
+<.title>
+  <%= @kveg.firstname %> <%= @kveg.lastname %>
 
-  <div
-    :if={@sauna_pass_valid}
-    class="border border-teal-500 rounded-md py-2 bg-teal-100 text-teal-500 flex flex-row justify-between items-center px-4"
-  >
-    <.icon name="hero-check-circle" class="mr-2" />
-    <div class="font-semibold">
-      Sauna pass valid
+  <:side>
+    <div class="border border-teal-500 rounded-md py-2 bg-teal-100 text-teal-500 flex flex-row justify-between items-center px-4">
+      <.icon name="hero-check-circle" class="mr-2" />
+      <div class="font-semibold">
+        Sauna pass valid
+      </div>
     </div>
-  </div>
-</header>
+  </:side>
+</.title>
 
 <.sauna_pass_reminder :if={@remind_sauna_pass} />
 
@@ -23,7 +20,7 @@
     <.action to={~p"/"} primary={false}>
       Rent things at Låven<.icon name="hero-chevron-right" class="mx-2" />
     </.action>
-    <.action to={~p"/"}>
+    <.action to={~p"/kveg/shop"}>
       Buy things at Dypet<.icon name="hero-chevron-right" class="relative top-[1px]" />
     </.action>
   </div>

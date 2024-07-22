@@ -2,4 +2,28 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* This file is for your main application CSS */
+* {
+  font-family: "Quicksand", sans-serif;
+}
+
+.hover-under {
+  position: relative;
+}
+
+.hover-under::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  background-color: theme('colors.blue.800');
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.hover-under:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}

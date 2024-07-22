@@ -3,7 +3,6 @@ defmodule KriteWeb.ShopLive do
 
   alias Krite.Accounts
   alias Krite.Products
-  alias Krite.Purchases
 
   def mount(_params, session, socket) do
     kveg = Accounts.get_kveg!(session["kveg_id"])
@@ -17,7 +16,10 @@ defmodule KriteWeb.ShopLive do
       ])
       |> assign(:search, "")
       |> assign(:cart, [])
+      # |> assign(:cart, [{%{name: "Sample", id: 1}, 2}])
       |> assign(:total, 0)
+      |> assign(:flash_success, false)
+      |> assign(:flash_timeout, nil)
 
     socket =
       if connected?(socket) do
@@ -31,7 +33,7 @@ defmodule KriteWeb.ShopLive do
   end
 
   def handle_event("search", %{"search" => ""}, socket) do
-    {:noreply, assign(socket, search: "", search_list: [])}
+    {:noreply, assign(socket, search: "", search_list: socket.assigns.catalog)}
   end
 
   def handle_event("search", %{"search" => term}, socket) do
@@ -46,6 +48,10 @@ defmodule KriteWeb.ShopLive do
       |> assign(:search_list, search_list)
       |> assign(:search, term)
 
+    {:noreply, socket}
+  end
+
+  def handle_event("add-first-item", _params, socket) do
     {:noreply, socket}
   end
 
@@ -90,18 +96,38 @@ defmodule KriteWeb.ShopLive do
   end
 
   def handle_event("checkout", _params, socket) do
-    cart = Map.new(socket.assigns.cart, fn {id, {_name, count}} -> {id, count} end)
+    :timer.sleep(1000)
+    # kveg_id = socket.assigns.kveg.id
+    # cart = socket.assigns.cart
 
-    {:ok, purchase} = Purchases.create_purchase(socket.assigns.kveg_id, cart)
+    # {:ok, purchase} = Purchases.create_purchase(kveg_id, cart)
+
+    {:ok, tref} = :timer.send_after(3000, :hide_flash)
 
     socket =
       socket
-      |> update(:balance, &(&1 - purchase.total_cost))
-      |> assign(:search_list, [])
+      |> assign(:search_list, socket.assigns.catalog)
       |> assign(:search, "")
-      |> assign(:cart, %{})
+      |> assign(:cart, [])
+      # |> assign(:cart, [{%{name: "Sample", id: 1}, 2}])
+      |> assign(:total, 0)
+      |> assign(:flash_success, true)
+      |> assign(:flash_timeout, tref)
 
     {:noreply, socket}
+  end
+
+  def handle_event("hide-flash", _params, socket) do
+    hide_flash(socket)
+  end
+
+  def handle_info(:hide_flash, socket) do
+    hide_flash(socket)
+  end
+
+  defp hide_flash(socket) do
+    :timer.cancel(socket.assigns.flash_timeout)
+    {:noreply, assign(socket, flash_success: false, flash_timeout: nil)}
   end
 
   defp get_item(socket, item_id) do

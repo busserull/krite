@@ -1,4 +1,4 @@
-<h1>Welcome! How about logging in?</h1>
+<h1 class="text-2xl text-nat-700 pb-3">Welcome Kveg! How about logging in?</h1>
 
 <.form :let={f} for={%{}} as={:kveg} action={~p"/log-in"}>
   <.error :if={@error_message}>
@@ -8,7 +8,9 @@
   <.input field={f[:email]} type="email" label="Email" value={@email} required />
   <.input field={f[:password]} type="password" label="Password" required />
 
-  <.button>
-    Log me in
-  </.button>
+  <div class="flex flex-row justify-end sm:justify-start">
+    <.button class="mt-6">
+      Log me in
+    </.button>
+  </div>
 </.form>

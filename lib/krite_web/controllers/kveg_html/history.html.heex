@@ -1,0 +1,19 @@
+<h1>Welcome</h1>
+
+<h2>Deposits</h2>
+<ul>
+  <li :for={deposit <- @current_kveg.deposits}>
+    <%= deposit.amount %>
+  </li>
+</ul>
+
+<h2>Purchases</h2>
+<ul>
+  <li :for={purchase <- @current_kveg.purchases}>
+    <%= purchase.total_cost %>
+  </li>
+</ul>
+
+<pre>
+<%= inspect @current_kveg, pretty: true %>
+</pre>
