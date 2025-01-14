@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :krite, Krite.Repo,
   username: "austreng",
-  password: "postgres",
+  password: "milkman",
   hostname: "localhost",
   database: "krite_dev",
   stacktrace: true,
