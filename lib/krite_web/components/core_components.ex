@@ -280,7 +280,7 @@ defmodule KriteWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "bg-blue-600 text-white hover:bg-blue-500 px-6 py-4 rounded-full text-lg",
+        "bg-blue-600 text-white hover:bg-blue-500 px-6 py-3 rounded-md text-lg",
         "font-semibold leading-6 flex flex-row gap-2 justify-center items-center",
         "hover:cursor-pointer transition-colors",
         @class
@@ -427,7 +427,7 @@ defmodule KriteWeb.CoreComponents do
         id={@id}
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
         class={[
-          "mt-2 block w-full rounded-full px-[3.5%] text-nat-800 focus:ring-0 font-medium",
+          "mt-2 block w-full rounded-md px-[3.5%] text-nat-800 focus:ring-0 font-medium",
           "phx-no-feedback:border-nat-500 phx-no-feedback:focus:border-nat-400",
           @errors != [] && "border-pink-400 focus:border-pink-400"
         ]}
@@ -459,8 +459,8 @@ defmodule KriteWeb.CoreComponents do
 
   def error(assigns) do
     ~H"""
-    <p class="mt-3 flex gap-3 text-md font-medium leading-6 text-rose-600 phx-no-feedback:hidden">
-      <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
+    <p class="mt-3 flex items-center gap-3 text-lg font-medium leading-6 text-rose-600 phx-no-feedback:hidden">
+      <.icon name="hero-exclamation-circle-mini" class="h-7 w-7" />
       <%= render_slot(@inner_block) %>
     </p>
     """
