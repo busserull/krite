@@ -38,6 +38,10 @@ defmodule KriteWeb.KvegController do
     |> redirect(to: ~p"/")
   end
 
+  def forgot_password(conn, _params) do
+    render(conn, :forgot, email: nil)
+  end
+
   def history(conn, _params) do
     render(conn, :history)
   end

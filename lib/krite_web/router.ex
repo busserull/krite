@@ -28,6 +28,7 @@ defmodule KriteWeb.Router do
     get "/", PageController, :home
 
     get "/log-in", KvegController, :new
+    get "/forgot-password", KvegController, :forgot_password
     post "/log-in", KvegController, :create
     delete "/log-out", KvegController, :delete
 

@@ -1,0 +1,11 @@
+<section class="w-2/3 mx-auto">
+  <h1 class="text-2xl text-nat-700 pb-3 font-semibold">Forgot your password?</h1>
+
+  <.form :let={f} for={%{}} as={:kveg} action={~p"/log-in"}>
+    <.input field={f[:email]} type="email" label="Email" value={@email} required />
+
+    <.button class="mt-6 w-full">
+      Send reset link
+    </.button>
+  </.form>
+</section>
