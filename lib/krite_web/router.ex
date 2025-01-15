@@ -31,8 +31,11 @@ defmodule KriteWeb.Router do
     post "/log-in", KvegLoginController, :create
     delete "/log-out", KvegLoginController, :delete
 
-    get "/forgot-password", KvegPasswordResetController, :new
-    post "/forgot-password", KvegPasswordResetController, :create
+    get "/forgot-password", KvegPasswordResetController, :forgot_form
+    post "/forgot-password", KvegPasswordResetController, :forgot_submit
+
+    get "/reset-password/:handle", KvegPasswordResetController, :reset_form
+    post "/reset-password/:handle", KvegPasswordResetController, :reset_submit
 
     resources "/kveg-list", KvegListController
     resources "/purchases", PurchaseController

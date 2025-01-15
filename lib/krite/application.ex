@@ -14,6 +14,7 @@ defmodule Krite.Application do
       {Phoenix.PubSub, name: Krite.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: Krite.Finch},
+      Krite.Accounts.Kveg.ResetLink,
       # Start a worker by calling: Krite.Worker.start_link(arg)
       # {Krite.Worker, arg},
       # Start to serve requests, typically the last entry

@@ -74,6 +74,49 @@ defmodule Krite.Accounts do
   def get_kveg_by_email_and_password(_, _), do: nil
 
   @doc """
+  Get a Kveg from a password reset link handle.
+
+  Once the `handle` has been used, it is invalidated, and will not work
+  in further invocations.
+
+  ## Examples
+    
+    # This link exists and has not expired
+    iex> get_kveg_by_password_reset_link("c8ab2d39636383c71764df01146796d1")
+    %Kveg{}
+
+    # This link has been used, and cannot be used again
+    iex> get_kveg_by_password_reset_link("c8ab2d39636383c71764df01146796d1")
+    nil
+
+    # This link does not exist or has expired
+    iex> get_kveg_by_password_reset_link("926442b96975f7a8b5465f8f2fc28c8c")
+    nil
+  """
+  def get_kveg_by_password_reset_link(handle) do
+    if kveg_id = Kveg.ResetLink.get_kveg_id(handle) do
+      get_kveg!(kveg_id)
+    end
+  end
+
+  @doc """
+  Create a password reset link handle for a Kveg by email.
+
+  ## Examples
+
+    iex> create_kveg_password_reset_link("kveg@example.com")
+    "f291f70efa1e4d437f4d0d8aff997c3a"
+
+    iex> create_kveg_password_reset_link("budeie@example.com")
+    nil
+  """
+  def create_kveg_password_reset_link(email) do
+    if kveg = Repo.get_by(Kveg, email: email) do
+      Kveg.ResetLink.new(kveg.id)
+    end
+  end
+
+  @doc """
   Creates a kveg.
 
   ## Examples
