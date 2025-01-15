@@ -1,29 +1,27 @@
 <section class="w-2/3 mx-auto">
   <h1 class="text-2xl text-nat-700 pb-3 font-semibold">Set a new password</h1>
 
-  <%= if @success do %>
-    <.success>
-      <%= @success %>
-    </.success>
+  <.success :if={@success}>
+    <%= @success %>
+  </.success>
 
-    <div class="mt-4">
-      <.href to={~p"/log-in"}>
-        Back to login
-      </.href>
-    </div>
-  <% else %>
-    <.form :let={f} for={%{}} as={:kveg} action={~p"/reset-password/#{@handle}"}>
-      <.error :if={@error}>
-        <%= @error %>
-      </.error>
+  <.error :if={@error}>
+    <%= @error %>
+  </.error>
 
-      <.input field={f[:password]} type="password" label="Password" required />
+  <.form :let={f} :if={@enable_form} for={%{}} action={~p"/reset-password/#{@handle}"}>
+    <.input field={f[:password]} type="password" label="Password" required />
 
-      <.input field={f[:password_again]} type="password" label="Repeat password" required />
+    <.input field={f[:password_again]} type="password" label="Repeat password" required />
 
-      <.button class="mt-6 w-full">
-        Set new password
-      </.button>
-    </.form>
-  <% end %>
+    <.button class="mt-6 w-full">
+      Set new password
+    </.button>
+  </.form>
+
+  <div :if={!@enable_form} class="mt-4">
+    <.href to={~p"/log-in"}>
+      Back to login
+    </.href>
+  </div>
 </section>

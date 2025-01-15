@@ -18,19 +18,41 @@ defmodule KriteWeb.KvegPasswordResetController do
   end
 
   def reset_form(conn, %{"handle" => password_reset_link}) do
-    render(conn, :reset, success: nil, error: nil, handle: password_reset_link)
+    render(conn, :reset,
+      success: nil,
+      error: nil,
+      handle: password_reset_link,
+      enable_form: true
+    )
   end
 
-  def reset_submit(conn, %{"kveg" => params, "handle" => password_reset_link}) do
+  def reset_submit(conn, %{"handle" => password_reset_link} = params) do
     %{"password" => password, "password_again" => password_again} = params
 
-    IO.puts("WE GOT:")
-    IO.puts(password)
-    IO.puts(password_again)
+    if password == password_again do
+      kveg_id = Accounts.get_kveg_by_password_reset_link(password_reset_link)
 
-    if password != password_again do
-      error = "Oh no, those passwords didn't quite match"
-      render(conn, :reset, success: nil, error: error, handle: password_reset_link)
+      {success, error} =
+        if kveg_id do
+          {"Perfect", nil}
+        else
+          {nil, "That link seems to have expired"}
+        end
+
+      render(conn, :reset,
+        # success: "Perfect, now you should log in to try it out!",
+        success: success,
+        error: error,
+        handle: password_reset_link,
+        enable_form: false
+      )
+    else
+      render(conn, :reset,
+        success: nil,
+        error: "Oh no, those passwords didn't quite match",
+        handle: password_reset_link,
+        enable_form: true
+      )
     end
   end
 end
