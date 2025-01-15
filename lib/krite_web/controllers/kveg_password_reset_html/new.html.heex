@@ -1,0 +1,23 @@
+<section class="w-2/3 mx-auto">
+  <h1 class="text-2xl text-nat-700 pb-3 font-semibold">Forgot your password?</h1>
+
+  <%= if @message do %>
+    <.success>
+      <%= @message %>
+    </.success>
+
+    <div class="mt-4">
+      <.href to={~p"/log-in"}>
+        Back to login
+      </.href>
+    </div>
+  <% else %>
+    <.form :let={f} for={%{}} as={:kveg} action={~p"/forgot-password"}>
+      <.input field={f[:email]} type="email" label="Email" value={@email} required />
+
+      <.button class="mt-6 w-full">
+        Send reset link
+      </.button>
+    </.form>
+  <% end %>
+</section>

@@ -467,6 +467,20 @@ defmodule KriteWeb.CoreComponents do
   end
 
   @doc """
+  Generates a generic success message.
+  """
+  slot :inner_block, required: true
+
+  def success(assigns) do
+    ~H"""
+    <p class="mt-3 flex items-center gap-3 text-lg font-medium leading-6 text-green-600 phx-no-feedback:hidden">
+      <.icon name="hero-check-circle" class="h-7 w-7" />
+      <%= render_slot(@inner_block) %>
+    </p>
+    """
+  end
+
+  @doc """
   Renders a header.
   """
   attr :class, :string, default: nil
@@ -633,6 +647,21 @@ defmodule KriteWeb.CoreComponents do
         <%= render_slot(@inner_block) %>
       </.link>
     </div>
+    """
+  end
+
+  @doc """
+  Renders a navigation link.
+  """
+  attr :to, :any, required: true
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def href(assigns) do
+    ~H"""
+    <a href={@to} class={["text-blue-600 underline underline-offset-4", @class]}>
+      <%= render_slot(@inner_block) %>
+    </a>
     """
   end
 

@@ -1,7 +1,7 @@
-defmodule KriteWeb.KvegHTML do
+defmodule KriteWeb.KvegLoginHTML do
   use KriteWeb, :html
 
-  embed_templates "kveg_html/*"
+  embed_templates "kveg_login_html/*"
 
   attr :balance, :integer, required: true
 

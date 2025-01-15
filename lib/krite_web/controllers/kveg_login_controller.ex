@@ -1,4 +1,4 @@
-defmodule KriteWeb.KvegController do
+defmodule KriteWeb.KvegLoginController do
   use KriteWeb, :controller
 
   alias Krite.Accounts
@@ -36,10 +36,6 @@ defmodule KriteWeb.KvegController do
     conn
     |> AccountAuth.log_out()
     |> redirect(to: ~p"/")
-  end
-
-  def forgot_password(conn, _params) do
-    render(conn, :forgot, email: nil)
   end
 
   def history(conn, _params) do
