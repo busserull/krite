@@ -1,17 +1,11 @@
 <section class="w-2/3 mx-auto">
   <h1 class="text-2xl text-nat-700 pb-3 font-semibold">Set a new password</h1>
 
-  <.success :if={@success}>
-    <%= @success %>
-  </.success>
-
-  <.error :if={@error}>
-    <%= @error %>
-  </.error>
+  <.stop_message message={@stop_message} />
 
   <.form
     :let={f}
-    :if={@enable_form}
+    :if={!@stop_message}
     as={:kveg}
     for={@changeset}
     action={~p"/reset-password/#{@handle}"}
@@ -25,9 +19,5 @@
     </.button>
   </.form>
 
-  <div :if={!@enable_form} class="mt-4">
-    <.href to={~p"/log-in"}>
-      Back to login
-    </.href>
-  </div>
+  <.back_to_login :if={@stop_message} />
 </section>

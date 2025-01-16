@@ -59,6 +59,8 @@ defmodule Krite.Accounts.Kveg do
       message: "those passwords didn't quite match",
       required: true
     )
+    |> hash_password()
+    |> validate_required([:password_hash])
   end
 
   defp enable_reminder_when_changing_sauna_pass(changeset) do

@@ -3,7 +3,7 @@ defmodule KriteWeb.KvegPasswordResetController do
   alias Krite.Accounts
 
   def forgot_form(conn, _params) do
-    render(conn, :forgot, email: nil, success: nil)
+    render(conn, :forgot, email: nil, stop_message: nil)
   end
 
   def forgot_submit(conn, %{"kveg" => %{"email" => email}}) do
@@ -14,7 +14,9 @@ defmodule KriteWeb.KvegPasswordResetController do
       IO.puts("Password reset link for #{email}: '#{reset_link}'")
     end
 
-    render(conn, :forgot, email: nil, success: "Sweet, now check your email")
+    stop_message = {:success, "Sweet, now check your email"}
+
+    render(conn, :forgot, email: nil, stop_message: stop_message)
   end
 
   def reset_form(conn, %{"handle" => reset_link}) do
@@ -26,24 +28,11 @@ defmodule KriteWeb.KvegPasswordResetController do
         render(
           conn,
           :reset,
-          success: nil,
-          error: nil,
+          stop_message: nil,
           handle: reset_link,
-          enable_form: true,
           changeset: Accounts.change_kveg(kveg)
         )
     end
-
-    # if Accounts.get_kveg_by_password_reset_link(reset_link) do
-    #   render(conn, :reset,
-    #     success: nil,
-    #     error: nil,
-    #     handle: reset_link,
-    #     enable_form: true
-    #   )
-    # else
-    #   render_reset_expired(conn)
-    # end
   end
 
   def reset_submit(conn, %{"handle" => reset_link, "kveg" => pass_params}) do
@@ -52,20 +41,18 @@ defmodule KriteWeb.KvegPasswordResetController do
     if kveg do
       case Accounts.update_kveg_password(kveg, pass_params) do
         {:ok, _kveg} ->
-          render(conn,
-            success: "Perfect, now you should log in to try it out!",
-            error: nil,
+          render(
+            conn,
+            :reset,
+            stop_message: {:success, "Perfect, now you should log in to try it out!"},
             handle: reset_link,
-            enable_form: false,
             changeset: nil
           )
 
         {:error, changeset} ->
           render(conn, :reset,
-            success: nil,
-            error: inspect(changeset.errors),
+            stop_message: nil,
             handle: reset_link,
-            enable_form: true,
             changeset: changeset
           )
       end
@@ -76,9 +63,7 @@ defmodule KriteWeb.KvegPasswordResetController do
 
   defp render_reset_expired(conn) do
     render(conn, :reset,
-      success: nil,
-      error: "Oh my, that link seems to have expired",
-      enable_form: false,
+      stop_message: {:error, "Oh my, that link seems to have expired"},
       changeset: nil
     )
   end
