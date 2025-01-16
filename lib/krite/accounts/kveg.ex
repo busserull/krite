@@ -56,7 +56,7 @@ defmodule Krite.Accounts.Kveg do
     |> cast(attrs, [:password])
     |> validate_length(:password, min: 6)
     |> validate_confirmation(:password,
-      message: "Oh no, those passwords didn't quite match",
+      message: "those passwords didn't quite match",
       required: true
     )
   end

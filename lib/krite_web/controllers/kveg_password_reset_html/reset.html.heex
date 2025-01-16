@@ -9,7 +9,13 @@
     <%= @error %>
   </.error>
 
-  <.form :let={f} :if={@enable_form} as={:kveg} for={%{}} action={~p"/reset-password/#{@handle}"}>
+  <.form
+    :let={f}
+    :if={@enable_form}
+    as={:kveg}
+    for={@changeset}
+    action={~p"/reset-password/#{@handle}"}
+  >
     <.input field={f[:password]} type="password" label="Password" required />
 
     <.input field={f[:password_confirmation]} type="password" label="Repeat password" required />
