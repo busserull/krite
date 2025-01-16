@@ -50,7 +50,7 @@ defmodule Krite.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_kveg!(id), do: Kveg |> Repo.get!(id) |> calculate_and_put_balance()
+  def get_kveg!(id), do: Repo.get!(Kveg, id)
 
   @doc """
   Get a single kveg by email and password, returning nil if no such kveg exists.
@@ -158,6 +158,26 @@ defmodule Krite.Accounts do
   def update_kveg(%Kveg{} = kveg, attrs) do
     kveg
     |> Kveg.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Update a Kveg password.
+
+  ## Examples
+
+    iex> attrs = %{"password" => "abcdef", "password_confirmation" => "abcdef"}
+    %{"password" => "abcdef", "password_confirmation" => "abcdef"}
+
+    iex> update_kveg_password(%Kveg{}, attrs)
+    {:ok, %Kveg{}}
+
+    iex> update_kveg_password(%Kveg{}, %{})
+    {:error, %Ecto.Changeset{}}
+  """
+  def update_kveg_password(%Kveg{} = kveg, attrs) do
+    kveg
+    |> Kveg.password_changeset(attrs)
     |> Repo.update()
   end
 

@@ -50,6 +50,17 @@ defmodule Krite.Accounts.Kveg do
     |> validate_required([:password_hash])
   end
 
+  @doc false
+  def password_changeset(kveg, attrs) do
+    kveg
+    |> cast(attrs, [:password])
+    |> validate_length(:password, min: 6)
+    |> validate_confirmation(:password,
+      message: "Oh no, those passwords didn't quite match",
+      required: true
+    )
+  end
+
   defp enable_reminder_when_changing_sauna_pass(changeset) do
     if changeset.valid? && get_change(changeset, :sauna_pass_end) do
       changeset
