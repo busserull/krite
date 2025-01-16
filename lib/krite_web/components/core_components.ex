@@ -474,7 +474,7 @@ defmodule KriteWeb.CoreComponents do
   def success(assigns) do
     ~H"""
     <p class="mt-3 flex items-center gap-3 text-lg font-medium leading-6 text-green-600 phx-no-feedback:hidden">
-      <.icon name="hero-check-circle" class="h-7 w-7" />
+      <.icon name="hero-check-circle-mini" class="h-7 w-7" />
       <%= render_slot(@inner_block) %>
     </p>
     """

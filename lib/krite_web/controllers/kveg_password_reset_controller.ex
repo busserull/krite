@@ -17,42 +17,52 @@ defmodule KriteWeb.KvegPasswordResetController do
     render(conn, :forgot, email: nil, success: "Sweet, now check your email")
   end
 
-  def reset_form(conn, %{"handle" => password_reset_link}) do
-    render(conn, :reset,
-      success: nil,
-      error: nil,
-      handle: password_reset_link,
-      enable_form: true
-    )
-  end
-
-  def reset_submit(conn, %{"handle" => password_reset_link} = params) do
-    %{"password" => password, "password_again" => password_again} = params
-
-    if password == password_again do
-      kveg_id = Accounts.get_kveg_by_password_reset_link(password_reset_link)
-
-      {success, error} =
-        if kveg_id do
-          {"Perfect", nil}
-        else
-          {nil, "That link seems to have expired"}
-        end
-
-      render(conn, :reset,
-        # success: "Perfect, now you should log in to try it out!",
-        success: success,
-        error: error,
-        handle: password_reset_link,
-        enable_form: false
-      )
-    else
+  def reset_form(conn, %{"handle" => reset_link}) do
+    if Accounts.get_kveg_by_password_reset_link(reset_link) do
       render(conn, :reset,
         success: nil,
-        error: "Oh no, those passwords didn't quite match",
-        handle: password_reset_link,
+        error: nil,
+        handle: reset_link,
         enable_form: true
       )
+    else
+      render_reset_expired(conn)
     end
+  end
+
+  def reset_submit(conn, %{"handle" => reset_link, "kveg" => pass_params}) do
+    kveg_id = Accounts.get_kveg_by_password_reset_link(reset_link)
+
+    if kveg_id do
+      case kveg_id
+           |> Accounts.get_kveg!()
+           |> Accounts.update_kveg_password(pass_params) do
+        {:ok, _kveg} ->
+          render(conn,
+            success: "Perfect, now you should log in to try it out!",
+            error: nil,
+            handle: reset_link,
+            enable_form: false
+          )
+
+        {:error, changeset} ->
+          render(conn, :reset,
+            success: nil,
+            error: inspect(changeset.errors),
+            handle: reset_link,
+            enable_form: true
+          )
+      end
+    else
+      render_reset_expired(conn)
+    end
+  end
+
+  defp render_reset_expired(conn) do
+    render(conn, :reset,
+      success: nil,
+      error: "Oh my, that link seems to have expired",
+      enable_form: false
+    )
   end
 end
