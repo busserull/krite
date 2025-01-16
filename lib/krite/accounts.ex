@@ -76,16 +76,13 @@ defmodule Krite.Accounts do
   @doc """
   Get a Kveg from a password reset link handle.
 
-  Once the `handle` has been used, it is invalidated, and will not work
-  in further invocations.
-
   ## Examples
     
     # This link exists and has not expired
     iex> get_kveg_by_password_reset_link("c8ab2d39636383c71764df01146796d1")
     %Kveg{}
 
-    # This link has been used, and cannot be used again
+    # After some time, the link has expired, and cannot be used again
     iex> get_kveg_by_password_reset_link("c8ab2d39636383c71764df01146796d1")
     nil
 
@@ -112,8 +109,20 @@ defmodule Krite.Accounts do
   """
   def create_kveg_password_reset_link(email) do
     if kveg = Repo.get_by(Kveg, email: email) do
-      Kveg.ResetLink.new(kveg.id)
+      Kveg.ResetLink.create_handle(kveg.id)
     end
+  end
+
+  @doc """
+  Delete a password reset link handle.
+
+  ## Examples
+
+    iex> delete_kveg_password_reset_link("2f18a42850aade6c4b2576c84109d1dc")
+    :ok
+  """
+  def delete_kveg_password_reset_link(handle) do
+    Kveg.ResetLink.delete_handle(handle)
   end
 
   @doc """

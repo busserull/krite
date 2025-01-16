@@ -2,74 +2,85 @@ defmodule Krite.Accounts.Kveg.ResetLink do
   @moduledoc """
   Generate and remember password reset link handles for Kveg.
 
-  URL-safe reset link handles are created for a Kveg by calling
-  `new/1` with the Kveg `id`. This returns a password reset handle
-  that can be used to retrieve the inserted `id` until the handle
-  expires.
+  Create URL-safe reset link handles using `create_handle/1`
+  with the relevant Kveg `id`.
 
-  Handles expire after `@handle_valid_time` ms.
+  This Kveg `id` can then be retrieved using `get_kveg_id/1`
+  until the handle expires.
 
-  Retrieve Kveg `id`s by invoking `get_kveg_id/1` with a valid
-  and unexpired password reset link handle.
+  Handles expire after `expire_time_minutes` minutes, which
+  is the argument given when `start_link/1` is called with
+  this module.
 
-  Handles are single use, and will become invalidated once they
-  are used to retrieve a Kveg `id`.
+  To delete a handle before it expries, use `delete_handle/1`.
   """
 
   use GenServer
 
-  # 15 minutes
-  @handle_valid_time 15 * 1000 * 60
+  @doc """
+  Start a `Krite.Accounts.Kveg.ResetLink`, registering it under
+  its own module name.
 
-  @doc false
-  def start_link(_opts \\ []) do
-    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
+  Password reset link handles kept by this module will expire
+  after `expire_time_minutes` minutes.
+  """
+  def start_link(expire_time_minutes) do
+    GenServer.start_link(__MODULE__, expire_time_minutes, name: __MODULE__)
   end
 
   @doc """
   Create a new password reset link handle for `kveg_id`.
   """
-  def new(kveg_id) do
-    GenServer.call(__MODULE__, {:add, random_handle(), kveg_id})
+  def create_handle(kveg_id) do
+    GenServer.call(__MODULE__, {:create, random_handle(), kveg_id})
   end
 
   @doc """
-  Get the corresponding Kveg `id` to a `handle`, if it
-  exists and has not yet expired.
-
-  The `handle` is consumed and becomes invalidated for
-  further use.
+  Get the Kveg `id` connected to an existing and unexpired `handle`.
   """
   def get_kveg_id(handle) do
     GenServer.call(__MODULE__, {:get, handle})
   end
 
-  @doc false
-  def init(:ok) do
-    {:ok, %{}}
+  @doc """
+  Delete a `handle`, invalidating it for further Kveg `id` lookup.
+  """
+  def delete_handle(handle) do
+    GenServer.call(__MODULE__, {:delete, handle})
   end
 
   @doc false
-  def handle_call({:add, handle, kveg_id}, _from, state) do
-    new_state =
-      state
+  def init(expire_time_minutes) do
+    timeout = expire_time_minutes * 1000 * 60
+    {:ok, {timeout, %{}}}
+  end
+
+  @doc false
+  def handle_call({:create, handle, kveg_id}, _from, {timeout, store}) do
+    new_store =
+      store
       |> Enum.reject(fn {_, id} -> id == kveg_id end)
       |> Map.new()
       |> Map.put(handle, kveg_id)
 
-    :timer.send_after(@handle_valid_time, {:remove, handle})
+    :timer.send_after(timeout, {:delete, handle})
 
-    {:reply, handle, new_state}
+    {:reply, handle, {timeout, new_store}}
   end
 
   @doc false
-  def handle_call({:get, handle}, _from, state) do
-    {:reply, Map.get(state, handle), Map.delete(state, handle)}
+  def handle_call({:get, handle}, _from, {timeout, store}) do
+    {:reply, Map.get(store, handle), {timeout, store}}
   end
 
   @doc false
-  def handle_info({:remove, handle}, state) do
-    {:noreply, Map.delete(state, handle)}
+  def handle_call({:delete, handle}, _from, {timeout, store}) do
+    {:reply, :ok, {timeout, Map.delete(store, handle)}}
+  end
+
+  @doc false
+  def handle_info({:delete, handle}, {timeout, store}) do
+    {:noreply, {timeout, Map.delete(store, handle)}}
   end
 
   defp random_handle do
