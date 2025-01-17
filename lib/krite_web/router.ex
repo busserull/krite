@@ -5,7 +5,8 @@ defmodule KriteWeb.Router do
     only: [
       fetch_logged_in_account: 2,
       require_authenticated_budeie: 2,
-      require_authenticated_kveg: 2
+      require_authenticated_kveg: 2,
+      require_not_logged_in: 2
     ]
 
   pipeline :browser do
@@ -23,9 +24,7 @@ defmodule KriteWeb.Router do
   end
 
   scope "/", KriteWeb do
-    pipe_through :browser
-
-    get "/", PageController, :home
+    pipe_through [:browser, :require_not_logged_in]
 
     get "/log-in", KvegLoginController, :new
     post "/log-in", KvegLoginController, :create
@@ -36,12 +35,9 @@ defmodule KriteWeb.Router do
 
     get "/reset-password/:handle", KvegPasswordResetController, :reset_form
     put "/reset-password/:handle", KvegPasswordResetController, :reset_submit
-
-    resources "/kveg-list", KvegListController
-    resources "/purchases", PurchaseController
   end
 
-  scope "/kveg", KriteWeb do
+  scope "/", KriteWeb do
     pipe_through [:browser, :require_authenticated_kveg]
 
     get "/", KvegController, :index

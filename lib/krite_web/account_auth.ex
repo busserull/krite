@@ -17,7 +17,7 @@ defmodule KriteWeb.AccountAuth do
     |> configure_session(renew: true)
     |> clear_session()
     |> put_session(:budeie_id, budeie.id)
-    |> redirect(to: ~p"/")
+    |> redirect(to: ~p"/budeie")
 
     # TODO: Return to budeie start page
   end
@@ -33,7 +33,7 @@ defmodule KriteWeb.AccountAuth do
     |> configure_session(renew: true)
     |> clear_session()
     |> put_session(:kveg_id, kveg.id)
-    |> redirect(to: ~p"/kveg")
+    |> redirect(to: ~p"/")
 
     # TODO: Return to kveg home page
   end
@@ -103,6 +103,27 @@ defmodule KriteWeb.AccountAuth do
       conn
       |> redirect(to: ~p"/")
       |> halt()
+    end
+  end
+
+  @doc """
+  Ensure that no kveg or budeie is logged in, otherwise redirect them to
+  their respective home pages.
+  """
+  def require_not_logged_in(conn, _opts) do
+    cond do
+      conn.assigns[:kveg] ->
+        conn
+        |> redirect(to: ~p"/")
+        |> halt()
+
+      conn.assigns[:budeie] ->
+        conn
+        |> redirect(to: ~p"/budeie")
+        |> halt()
+
+      true ->
+        conn
     end
   end
 end
