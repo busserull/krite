@@ -26,7 +26,7 @@ defmodule KriteWeb.Router do
   scope "/", KriteWeb do
     pipe_through [:browser, :require_not_logged_in]
 
-    get "/log-in", KvegLoginController, :new
+    get "/", KvegLoginController, :new
     post "/log-in", KvegLoginController, :create
     delete "/log-out", KvegLoginController, :delete
 
@@ -37,7 +37,7 @@ defmodule KriteWeb.Router do
     put "/reset-password/:handle", KvegPasswordResetController, :reset_submit
   end
 
-  scope "/", KriteWeb do
+  scope "/kveg", KriteWeb do
     pipe_through [:browser, :require_authenticated_kveg]
 
     get "/", KvegController, :index

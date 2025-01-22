@@ -18,8 +18,6 @@ defmodule KriteWeb.AccountAuth do
     |> clear_session()
     |> put_session(:budeie_id, budeie.id)
     |> redirect(to: ~p"/budeie")
-
-    # TODO: Return to budeie start page
   end
 
   @doc """
@@ -33,9 +31,7 @@ defmodule KriteWeb.AccountAuth do
     |> configure_session(renew: true)
     |> clear_session()
     |> put_session(:kveg_id, kveg.id)
-    |> redirect(to: ~p"/")
-
-    # TODO: Return to kveg home page
+    |> redirect(to: ~p"/kveg")
   end
 
   @doc """
@@ -114,7 +110,7 @@ defmodule KriteWeb.AccountAuth do
     cond do
       conn.assigns[:kveg] ->
         conn
-        |> redirect(to: ~p"/")
+        |> redirect(to: ~p"/kveg")
         |> halt()
 
       conn.assigns[:budeie] ->
