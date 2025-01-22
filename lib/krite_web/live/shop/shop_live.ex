@@ -69,6 +69,7 @@ defmodule KriteWeb.ShopLive do
     socket =
       socket
       |> assign(:cart, cart)
+      |> assign(:search, "")
       |> update(:total, &(&1 + item.price))
 
     {:noreply, socket}

@@ -3,7 +3,7 @@
 
   <:side>
     <div class="border border-teal-500 rounded-md py-2 bg-teal-100 text-teal-500 flex flex-row justify-between items-center px-4">
-      <.icon name="hero-check-circle" class="mr-2" />
+      <.icon name="hero-check-circle-solid" class="mr-2" />
       <div class="font-semibold">
         Sauna pass valid
       </div>
@@ -26,7 +26,7 @@
   </div>
 </section>
 
-<.split>Or</.split>
+<.split class="mt-24">Or</.split>
 
 <ul class="grid grid-cols-1 sm:grid-cols-2 grid-flow-row gap-x-12 w-5/6 mx-auto text-lg text-blue-800 hover:cursor-pointer underline underline-offset-4">
   <li>Top up your account</li>
@@ -36,7 +36,7 @@
   <li>See Dypet statistics</li>
 </ul>
 
-<.split>Debug</.split>
+<.split class="mt-24">Debug</.split>
 
 <pre>
 <%= inspect @kveg, pretty: true %>

@@ -2,14 +2,15 @@ defmodule KriteWeb.KvegHTML do
   use KriteWeb, :html
 
   embed_templates "kveg_html/*"
+
   attr :balance, :integer, required: true
 
-  def money_card(assigns) do
+  defp money_card(assigns) do
     ~H"""
     <div class={[
       (@balance < 0 && "from-orange-400 to-pink-600") || "from-teal-400 to-blue-600",
-      "text-teal-50 bg-gradient-to-br rounded-md font-semibold p-6 w-full sm:w-auto
-    flex flex-row justify-around"
+      "text-teal-50 bg-gradient-to-br rounded-md font-semibold p-6 w-full sm:w-2/5
+      flex flex-row justify-around"
     ]}>
       <div>
         <div class="text-base">
@@ -30,7 +31,7 @@ defmodule KriteWeb.KvegHTML do
 
   attr :rest, :global
 
-  def sauna_pass_reminder(assigns) do
+  defp sauna_pass_reminder(assigns) do
     ~H"""
     <div class="text-yellow-600 bg-yellow-100 border-yellow-600 border rounded-md
       flex flex-col sm:flex-row justify-between my-4">
@@ -67,7 +68,7 @@ defmodule KriteWeb.KvegHTML do
 
   slot :inner_block, required: true
 
-  def action(assigns) do
+  defp action(assigns) do
     ~H"""
     <a
       href={@to}
