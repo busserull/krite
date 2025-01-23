@@ -3,6 +3,7 @@ defmodule KriteWeb.ShopLive do
 
   alias Krite.Accounts
   alias Krite.Products
+  alias Krite.Purchases
 
   # kveg: %Krite.Accounts.Kveg{}
   # search: A string containing the current search term
@@ -108,13 +109,12 @@ defmodule KriteWeb.ShopLive do
   end
 
   def handle_event("checkout", _params, socket) do
-    :timer.sleep(1000)
-    # kveg_id = socket.assigns.kveg.id
-    # cart = socket.assigns.cart
+    kveg_id = socket.assigns.kveg.id
+    cart = socket.assigns.cart
 
-    # {:ok, purchase} = Purchases.create_purchase(kveg_id, cart)
+    {:ok, _purchase} = Purchases.create_purchase(kveg_id, cart)
 
-    {:ok, tref} = :timer.send_after(3000, :hide_flash)
+    {:ok, tref} = :timer.send_after(1500, :hide_flash)
 
     socket =
       socket

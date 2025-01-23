@@ -31,7 +31,7 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
 # Development log
 
-[ ] Persist purchases to the database.
+[x] Persist purchases to the database.
 [ ] Make `Krite.Products.list_items` only return active items.
 [x] Highlight search match when searching in the shop.
 [ ] Add bar code scanning to devices that support it.
