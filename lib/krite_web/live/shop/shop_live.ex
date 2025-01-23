@@ -6,7 +6,7 @@ defmodule KriteWeb.ShopLive do
 
   # kveg: %Krite.Accounts.Kveg{}
   # search: A string containing the current search term
-  # search_list: A filter of :catalog that fit :search
+  # search_list: [{item_id, item_name, item_price}, ...] filter from :catalog by :search
   # catalog: [%Krite.Products.Item{}, ...] with :barcodes preloaded
   # cart: [{%Krite.Products.Items{}, item_count}, ...]
   # total: The total cost of the :cart
@@ -30,7 +30,10 @@ defmodule KriteWeb.ShopLive do
     socket =
       if connected?(socket) do
         catalog = Products.list_items()
-        assign(socket, catalog: catalog, search_list: catalog)
+
+        socket
+        |> assign(catalog: catalog)
+        |> update_search_list()
       else
         socket
       end
@@ -39,20 +42,21 @@ defmodule KriteWeb.ShopLive do
   end
 
   def handle_event("search", %{"search" => ""}, socket) do
-    {:noreply, assign(socket, search: "", search_list: socket.assigns.catalog)}
+    socket =
+      socket
+      |> assign(search: "")
+      |> update_search_list()
+
+    {:noreply, socket}
   end
 
   def handle_event("search", %{"search" => term}, socket) do
-    {:ok, regex} = Regex.compile(term, [:caseless])
-
-    search_list =
-      socket.assigns.catalog
-      |> Enum.filter(&Regex.match?(regex, &1.name))
+    term = String.replace(term, ~w/( ) [ ] { } * . ^ $ ? + \\ |/, "")
 
     socket =
       socket
-      |> assign(:search_list, search_list)
       |> assign(:search, term)
+      |> update_search_list()
 
     {:noreply, socket}
   end
@@ -76,6 +80,7 @@ defmodule KriteWeb.ShopLive do
       socket
       |> assign(:cart, cart)
       |> assign(:search, "")
+      |> update_search_list()
       |> update(:total, &(&1 + item.price))
 
     {:noreply, socket}
@@ -113,8 +118,8 @@ defmodule KriteWeb.ShopLive do
 
     socket =
       socket
-      |> assign(:search_list, socket.assigns.catalog)
       |> assign(:search, "")
+      |> update_search_list()
       |> assign(:cart, [])
       |> assign(:total, 0)
       |> assign(:flash_success, true)
@@ -141,5 +146,26 @@ defmodule KriteWeb.ShopLive do
       {id, ""} -> Enum.find(socket.assigns.catalog, &(&1.id == id))
       _ -> nil
     end
+  end
+
+  defp update_search_list(socket) do
+    search_list =
+      case socket.assigns.search do
+        "" ->
+          Enum.map(socket.assigns.catalog, &{&1.id, &1.name, &1.price})
+
+        term ->
+          regex = Regex.compile!("(" <> term <> ")", [:caseless])
+
+          term = String.downcase(term)
+
+          replacement = "<span class=\"font-semibold\">\\1</span>"
+
+          socket.assigns.catalog
+          |> Enum.filter(&String.contains?(String.downcase(&1.name), term))
+          |> Enum.map(&{&1.id, Regex.replace(regex, &1.name, replacement), &1.price})
+      end
+
+    assign(socket, :search_list, search_list)
   end
 end

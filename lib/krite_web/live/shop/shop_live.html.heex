@@ -1,12 +1,6 @@
 <div id="SearchBackdrop" class="hidden z-10 absolute w-screen h-screen bg-nat-900/60 top-0 left-0">
 </div>
 
-<pre :if={false}>
-class="border border-nat-600 focus:border-blue-500 mt-2 block
-w-full rounded-md text-nat-800 shadow-none
-focus:ring-0 phx-no-feedback:focus:"
-</pre>
-
 <div class="z-20 relative">
   <form phx-change="search" phx-submit="add-first-item">
     <.input
@@ -37,6 +31,7 @@ focus:ring-0 phx-no-feedback:focus:"
       placeholder="Search products"
       autocomplete="off"
       phx-debounce="20"
+      class="focus:rounded-none transition-[border-radius] duration-150"
     />
   </form>
 
@@ -51,13 +46,13 @@ focus:ring-0 phx-no-feedback:focus:"
 
       <ul :if={@search_list != []} class="my-2 hover:cursor-pointer">
         <li
-          :for={item <- Enum.take(@search_list, 6)}
+          :for={{item_id, item_name, item_price} <- Enum.take(@search_list, 6)}
           phx-click="add-item"
-          phx-value-item-id={item.id}
+          phx-value-item-id={item_id}
           class="px-2 py-3 border-b border-nat-400 hover:bg-blue-50/50 last:border-none flex flex-row justify-between transition-colors"
         >
-          <div><%= item.name %></div>
-          <div><%= item.price %> kr</div>
+          <div><%= raw(item_name) %></div>
+          <div><%= item_price %> kr</div>
         </li>
 
         <li
@@ -164,10 +159,3 @@ focus:ring-0 phx-no-feedback:focus:"
     </div>
   </div>
 </section>
-
-<div :if={false}>
-  <.split>Debug</.split>
-  <pre>
-<%= inspect @cart, pretty: true %>
-</pre>
-</div>
