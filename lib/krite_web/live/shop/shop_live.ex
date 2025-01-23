@@ -4,19 +4,25 @@ defmodule KriteWeb.ShopLive do
   alias Krite.Accounts
   alias Krite.Products
 
+  # kveg: %Krite.Accounts.Kveg{}
+  # search: A string containing the current search term
+  # search_list: A filter of :catalog that fit :search
+  # catalog: [%Krite.Products.Item{}, ...] with :barcodes preloaded
+  # cart: [{%Krite.Products.Items{}, item_count}, ...]
+  # total: The total cost of the :cart
+  # flash_success: A flag that, when enabled, flashes a success message after a purchase
+  # flash_timeout: A tref that counts down to setting :flash_success false
+
   def mount(_params, session, socket) do
     kveg = Accounts.get_kveg!(session["kveg_id"])
 
     socket =
       socket
       |> assign(:kveg, kveg)
-      |> assign(:search_list, [
-        %{id: 1, name: "Smooth talker", price: 200},
-        %{id: 2, name: "Womanizer", price: 90000}
-      ])
       |> assign(:search, "")
+      |> assign(:search_list, [])
+      |> assign(:catalog, [])
       |> assign(:cart, [])
-      # |> assign(:cart, [{%{name: "Sample", id: 1}, 2}])
       |> assign(:total, 0)
       |> assign(:flash_success, false)
       |> assign(:flash_timeout, nil)
@@ -110,7 +116,6 @@ defmodule KriteWeb.ShopLive do
       |> assign(:search_list, socket.assigns.catalog)
       |> assign(:search, "")
       |> assign(:cart, [])
-      # |> assign(:cart, [{%{name: "Sample", id: 1}, 2}])
       |> assign(:total, 0)
       |> assign(:flash_success, true)
       |> assign(:flash_timeout, tref)
