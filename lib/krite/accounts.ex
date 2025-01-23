@@ -50,7 +50,7 @@ defmodule Krite.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_kveg!(id), do: Repo.get!(Kveg, id)
+  def get_kveg!(id), do: Repo.get!(Kveg, id) |> Map.put(:balance, 100)
 
   @doc """
   Get a single kveg by email and password, returning nil if no such kveg exists.

@@ -1,0 +1,22 @@
+<section class="w-2/3 mx-auto">
+  <h1 class="text-2xl text-nat-700 pb-3 font-semibold">Welcome, Kveg!</h1>
+
+  <.form :let={f} for={%{}} as={:kveg} action={~p"/kveg-login"}>
+    <.error :if={@error_message}>
+      <%= @error_message %>
+    </.error>
+
+    <.input field={f[:email]} type="email" label="Email" value={@email} required />
+    <.input field={f[:password]} type="password" label="Password" required />
+
+    <.button class="mt-6 w-full">
+      Let me in
+    </.button>
+  </.form>
+
+  <div class="mt-4">
+    <.href to={~p"/forgot-password"}>
+      Forgot your password?
+    </.href>
+  </div>
+</section>

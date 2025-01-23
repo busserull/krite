@@ -24,11 +24,19 @@ defmodule KriteWeb.Router do
   end
 
   scope "/", KriteWeb do
+    pipe_through :browser
+
+    delete "/logout", LoginController, :delete
+  end
+
+  scope "/", KriteWeb do
     pipe_through [:browser, :require_not_logged_in]
 
-    get "/", KvegLoginController, :new
-    post "/log-in", KvegLoginController, :create
-    delete "/log-out", KvegLoginController, :delete
+    get "/", LoginController, :kveg_new
+    post "/kveg-login", LoginController, :kveg_create
+
+    get "/budeie-login", LoginController, :budeie_new
+    post "/budeie-login", LoginController, :budeie_create
 
     get "/forgot-password", KvegPasswordResetController, :forgot_form
     post "/forgot-password", KvegPasswordResetController, :forgot_submit

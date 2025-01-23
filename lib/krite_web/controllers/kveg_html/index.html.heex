@@ -1,4 +1,4 @@
-<.title>
+<.title :if={false}>
   <%= @kveg.firstname %> <%= @kveg.lastname %>
 
   <:side>
@@ -12,6 +12,8 @@
 </.title>
 
 <.sauna_pass_reminder :if={@remind_sauna_pass} />
+
+<section class="flex flex-col sm:flex-row justify-between items-center gap-3"></section>
 
 <section class="flex flex-col sm:flex-row justify-between items-center gap-3">
   <.money_card balance={@kveg.balance} />
@@ -35,9 +37,7 @@
   <li>Play a game of Rose</li>
   <li>See Dypet statistics</li>
 </ul>
-
-<.split class="mt-24">Debug</.split>
-
-<pre>
-<%= inspect @kveg, pretty: true %>
-</pre>
+<!-- <.split class="mt-24">Debug</.split> -->
+<!-- <pre> -->
+<!-- <%= inspect(@kveg, pretty: true) %> -->
+<!-- </pre> -->
