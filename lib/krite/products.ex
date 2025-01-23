@@ -21,7 +21,7 @@ defmodule Krite.Products do
 
   """
   def list_items do
-    Repo.all(from i in Item, preload: [:barcodes])
+    Repo.all(from(i in Item, where: i.active, preload: [:barcodes]))
   end
 
   @doc """
@@ -52,7 +52,7 @@ defmodule Krite.Products do
      ** (Ecto.NoResultsError)
   """
   def get_item_by_barcode(code) do
-    barcode = Repo.one!(from b in Barcode, where: b.code == ^code)
+    barcode = Repo.one!(from(b in Barcode, where: b.code == ^code))
     get_item!(barcode.item_id)
   end
 
@@ -67,7 +67,7 @@ defmodule Krite.Products do
   """
   def get_projected_stock(id) do
     {stock, purchased_after_last_stock?} =
-      case Repo.all(from s in Stock, where: s.item_id == ^id) do
+      case Repo.all(from(s in Stock, where: s.item_id == ^id)) do
         [] ->
           {0, fn _ -> true end}
 
