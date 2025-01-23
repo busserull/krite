@@ -5,8 +5,10 @@ and purchase various products sold at Dypet.
 
 They can also pay for a sauna session, or buy a sauna season pass.
 
-Dypet administrators can log in, see available stock, update stock, and change prices.
+Dypet administrators ("budeie") can log in, see available stock, update stock, and change prices.
 Automatic stock reports can also be generated and downloaded.
+
+Kveg can also organize and join trips
 
 # Running
 
@@ -26,3 +28,9 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
   * Docs: https://hexdocs.pm/phoenix
   * Forum: https://elixirforum.com/c/phoenix-forum
   * Source: https://github.com/phoenixframework/phoenix
+
+# Development log
+
+[ ] Persist purchases to the database.
+[ ] Create a header where login information can be placed.
+[ ] Send dummy email with password reset links.
