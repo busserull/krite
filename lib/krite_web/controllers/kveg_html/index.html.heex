@@ -13,11 +13,14 @@
 
 <.sauna_pass_reminder :if={@remind_sauna_pass} />
 
-<section class="flex flex-col sm:flex-row justify-between items-center gap-3"></section>
+<section class="flex flex-col sm:flex-row justify-between items-stretch gap-6">
+  <.balance_card balance={@kveg.balance - 200} />
+  <.sauna_card pass_end={@kveg.sauna_pass_end} />
+</section>
+
+<.split>Upcoming trips</.split>
 
 <section class="flex flex-col sm:flex-row justify-between items-center gap-3">
-  <.money_card balance={@kveg.balance} />
-
   <div class="flex flex-col gap-3 w-3/4 sm:w-auto">
     <.action to={~p"/"} primary={false}>
       Rent things at Låven<.icon name="hero-chevron-right" class="mx-2" />
