@@ -60,9 +60,9 @@ defmodule KriteWeb.CoreComponents do
   def split(assigns) do
     ~H"""
     <div class={["w-full flex flex-row justify-around gap-8 my-4 relative", @class]}>
-      <div class="border-b border-nat-500 h-[1px] absolute top-1/2 w-full left-0"></div>
+      <div class="border-b border-nat-500 h-[1px] absolute top-1/2 w-full left-0 -z-50"></div>
 
-      <div class="z-0 bg-main-bg relative px-5 font-medium text-lg text-nat-700 uppercase">
+      <div class="-z-40 bg-main-bg relative px-5 font-medium text-lg text-nat-700 uppercase">
         <%= render_slot(@inner_block) %>
       </div>
     </div>
