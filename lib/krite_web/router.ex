@@ -50,6 +50,8 @@ defmodule KriteWeb.Router do
 
     get "/", KvegController, :index
 
+    get "/account-top-up", InfoController, :dypet_account
+
     post "/sauna-pass-unremind", KvegController, :sauna_pass_unremind
 
     live "/shop", ShopLive

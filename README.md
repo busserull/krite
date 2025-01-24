@@ -36,7 +36,7 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 [x] Highlight search match when searching in the shop.
 [x] Create new cards showing account balance and sauna pass at a glance.
 [ ] Refactor the back link component.
-[ ] Add a route explaining how to add money to Dypet.
+[x] Add a route explaining how to add money to Dypet.
 [ ] Refactor action elements.
 [ ] Add bar code scanning to devices that support it.
 [ ] Create a header where login information can be placed.

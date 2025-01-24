@@ -5,8 +5,6 @@ defmodule KriteWeb.KvegHTML do
 
   attr(:balance, :integer, required: true)
 
-  # <div class="bg-gradient-to-br from-green-500 to-teal-600 rounded-md pt-3 px-5 relative overflow-hidden shadow-lg shadow-black/40 w-full flex flex-col justify-between items-start">
-
   defp balance_card(assigns) do
     ~H"""
     <div class={["bg-gradient-to-br rounded-md pt-3 px-5 relative overflow-hidden shadow-lg shadow-black/40 w-full flex flex-col justify-between items-start",
@@ -18,14 +16,14 @@ defmodule KriteWeb.KvegHTML do
     </p>
     </div>
 
-    <div class={["border-t w-full hover:cursor-pointer", @balance < 0 && "border-amber-50/60" || "border-green-50/30"]}>
+    <.link href={~p"/kveg/account-top-up"} class={["border-t w-full hover:cursor-pointer", @balance < 0 && "border-amber-50/60" || "border-green-50/30"]}>
     <p class={["font-semibold text-center pt-2", @balance < 0 && "text-amber-50 text-xl pb-1" || "text-green-800 pb-3"]}>
       Click here to top it up
     </p>
     <p :if={@balance < 0} class="text-red-900 text-center text-semibold pb-3">
       (You should do that now)
     </p>
-    </div>
+    </.link>
     </div>
     """
   end
