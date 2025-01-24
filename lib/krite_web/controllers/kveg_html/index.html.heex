@@ -11,8 +11,6 @@
   </:side>
 </.title>
 
-<.sauna_pass_reminder :if={@remind_sauna_pass} />
-
 <section class="flex flex-col sm:flex-row justify-between items-stretch gap-6">
   <.balance_card balance={@kveg.balance - 200} />
   <.sauna_card pass_end={@kveg.sauna_pass_end} />

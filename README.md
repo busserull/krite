@@ -37,6 +37,7 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 [x] Create new cards showing account balance and sauna pass at a glance.
 [ ] Refactor the back link component.
 [x] Add a route explaining how to add money to Dypet.
+[ ] Make it possible to directly buy a sauna pass from the home screen if a Kveg doesn't have it already.
 [ ] Refactor action elements.
 [ ] Add bar code scanning to devices that support it.
 [ ] Create a header where login information can be placed.
