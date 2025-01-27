@@ -27,8 +27,6 @@ defmodule KriteWeb.LoginController do
   end
 
   def delete(conn, _params) do
-    conn
-    |> AccountAuth.log_out()
-    |> redirect(to: ~p"/")
+    AccountAuth.log_out(conn)
   end
 end

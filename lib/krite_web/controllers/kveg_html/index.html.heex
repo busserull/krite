@@ -16,7 +16,19 @@
   <.sauna_card pass_end={@kveg.sauna_pass_end} />
 </section>
 
+<section class="flex flex-col sm:flex-row justify-stretch items-stretch gap-6 mt-6">
+  <.act to={~p"/kveg/shop"} class="hover:cursor-not-allowed hover:bg-gray-400 w-full">
+    Rent things at Låven
+  </.act>
+
+  <.act to={~p"/kveg/shop"} class="w-full">
+    Buy things at Dypet
+  </.act>
+</section>
+
 <.split>Upcoming trips</.split>
+
+<section class="flex flex-row gap-4 justify-end my-4"></section>
 
 <section class="flex flex-col sm:flex-row justify-between items-center gap-3">
   <div class="flex flex-col gap-3 w-3/4 sm:w-auto">

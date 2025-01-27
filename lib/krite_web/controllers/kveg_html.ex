@@ -7,7 +7,7 @@ defmodule KriteWeb.KvegHTML do
 
   defp balance_card(assigns) do
     ~H"""
-    <div class={["bg-gradient-to-br rounded-md pt-3 px-5 relative overflow-hidden shadow-lg shadow-black/40 w-full flex flex-col justify-between items-start",
+    <div class={["bg-gradient-to-br rounded-md pt-4 px-5 relative overflow-hidden shadow-lg shadow-black/40 w-full flex flex-col justify-between items-start",
     @balance < 0 && "from-amber-500 to-pink-600" || "from-green-500 to-teal-600"]}>
     <div>
     <p class={["font-semibold", @balance < 0 && "text-amber-900" || "text-green-800"]}>Your account</p>
@@ -46,32 +46,6 @@ defmodule KriteWeb.KvegHTML do
       <%= format_expire_date(@pass_end) %>
     </p>
     </div>
-    </div>
-    """
-  end
-
-  attr(:balance, :integer, required: true)
-
-  defp money_card(assigns) do
-    ~H"""
-    <div class={[
-      (@balance < 0 && "from-orange-400 to-pink-600") || "from-teal-400 to-blue-600",
-      "text-teal-50 bg-gradient-to-br rounded-md font-semibold p-6 w-full sm:w-2/5
-      flex flex-row justify-around shadow-lg shadow-black/30"
-    ]}>
-      <div>
-        <div class="text-base">
-          Your account:
-        </div>
-
-        <div class="text-7xl">
-          <%= @balance %> kr
-        </div>
-
-        <div :if={@balance < 0}>
-          You might want to top that up
-        </div>
-      </div>
     </div>
     """
   end
@@ -127,6 +101,19 @@ defmodule KriteWeb.KvegHTML do
       ]}
     >
       <%= render_slot(@inner_block) %>
+    </a>
+    """
+  end
+
+  attr(:to, :any, required: true)
+  attr(:class, :any, default: "")
+
+  slot(:inner_block, required: true)
+
+  defp act(assigns) do
+    ~H"""
+    <a href={@to} class={["bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-md text-lg font-semibold transition-colors hover:cursor-pointer", @class]}>
+    <%= render_slot(@inner_block) %>
     </a>
     """
   end

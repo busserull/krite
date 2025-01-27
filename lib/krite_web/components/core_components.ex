@@ -48,13 +48,15 @@ defmodule KriteWeb.CoreComponents do
   @doc """
   Render a page split with a centered uppercase title.
 
+  A `split` without an inner block will render a horizontal line.
+
   ## Examples
 
     <.split>
       Your cart
     </.split>
   """
-  slot(:inner_block, required: true)
+  slot(:inner_block)
   attr(:class, :string, default: nil)
 
   def split(assigns) do
@@ -62,7 +64,7 @@ defmodule KriteWeb.CoreComponents do
     <div class={["w-full flex flex-row justify-around gap-8 my-4 relative", @class]}>
       <div class="border-b border-nat-500 h-[1px] absolute top-1/2 w-full left-0 -z-50"></div>
 
-      <div class="-z-40 bg-main-bg relative px-5 font-medium text-lg text-nat-700 uppercase">
+      <div :if={@inner_block} class="-z-40 bg-main-bg relative px-5 font-medium text-lg text-nat-700 uppercase">
         <%= render_slot(@inner_block) %>
       </div>
     </div>
@@ -631,6 +633,27 @@ defmodule KriteWeb.CoreComponents do
         </div>
       </dl>
     </div>
+    """
+  end
+
+  @doc """
+  Render a "Take me back" link.
+
+  ## Examples
+
+    <.take_me_back to={~p"/"} />
+  """
+
+  attr(:to, :any, required: true)
+
+  def take_me_back(assigns) do
+    ~H"""
+    <.link href={@to} class="flex flex-row items-center text-blue-900 text-lg mb-6">
+      <.icon name="hero-chevron-left" class="h-4 w-4" />
+      <p class="pl-1">
+        Take me back
+      </p>
+    </.link>
     """
   end
 
