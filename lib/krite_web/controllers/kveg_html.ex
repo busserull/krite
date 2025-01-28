@@ -112,8 +112,9 @@ defmodule KriteWeb.KvegHTML do
 
   defp act(assigns) do
     ~H"""
-    <a href={@to} class={["bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-md text-lg font-semibold transition-colors hover:cursor-pointer", @class]}>
-    <%= render_slot(@inner_block) %>
+    <a href={@to} class={["border rounded-md border-blue-600 hover:bg-blue-500 text-blue-800 hover:text-white py-3 px-6 text-xl font-semibold transition-colors hover:cursor-pointer flex flex-row items-center justify-between shadow-md gap-3", @class]}>
+      <p><%= render_slot(@inner_block) %></p>
+      <.icon name="hero-chevron-right" class="h-6 w-6"/>
     </a>
     """
   end
