@@ -84,35 +84,14 @@ defmodule KriteWeb.KvegHTML do
     """
   end
 
-  attr(:primary, :boolean, default: true)
-  attr(:to, :any, required: true, doc: "the path to access when clicked")
-
-  slot(:inner_block, required: true)
-
-  defp action(assigns) do
-    ~H"""
-    <a
-      href={@to}
-      class={[
-        (@primary && "bg-blue-600 text-white hover:bg-blue-500") ||
-          "border-2 border-blue-600 text-blue-600 hover:text-blue-400 hover:border-blue-400",
-        "px-6 py-4 rounded-full text-xl font-semibold flex flex-row gap-2 leading-6
-        justify-center items-center hover:cursor-pointer transition-colors"
-      ]}
-    >
-      <%= render_slot(@inner_block) %>
-    </a>
-    """
-  end
-
   attr(:to, :any, required: true)
   attr(:class, :any, default: "")
 
   slot(:inner_block, required: true)
 
-  defp act(assigns) do
+  defp action(assigns) do
     ~H"""
-    <a href={@to} class={["border rounded-md border-blue-600 hover:bg-blue-500 text-blue-800 hover:text-white py-3 px-6 text-xl font-semibold transition-colors hover:cursor-pointer flex flex-row items-center justify-between shadow-md gap-3", @class]}>
+    <a href={@to} class={["border rounded-full border-blue-600 hover:bg-blue-500 text-blue-800 hover:text-white py-3 px-6 text-xl font-semibold transition-colors hover:cursor-pointer flex flex-row items-center justify-between shadow-md gap-3", @class]}>
       <p><%= render_slot(@inner_block) %></p>
       <.icon name="hero-chevron-right" class="h-6 w-6"/>
     </a>
