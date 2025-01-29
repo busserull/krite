@@ -9,6 +9,11 @@ defmodule KriteWeb.KvegHTML do
     ~H"""
     <div class={["bg-gradient-to-br rounded-md pt-4 px-5 relative overflow-hidden shadow-lg shadow-black/40 w-full flex flex-col justify-between items-start",
     @balance < 0 && "from-amber-500 to-pink-600" || "from-green-500 to-teal-600"]}>
+    <div class="right-5 top-5 absolute">
+    <.icon :if={@balance < 0} name="hero-fire-solid" class="text-orange-300/30 w-20 h-20" />
+    <.icon :if={@balance >= 0} name="hero-circle-stack-solid" class="text-green-300/90 w-20 h-20" />
+    </div>
+
     <div>
     <p class={["font-semibold", @balance < 0 && "text-amber-900" || "text-green-800"]}>Your account</p>
     <p class={["font-semibold mt-1 mb-4", @balance < 0 && "text-amber-50" || "text-green-50"]}>
@@ -33,7 +38,7 @@ defmodule KriteWeb.KvegHTML do
   defp sauna_card(assigns) do
     ~H"""
     <div class="bg-gradient-to-br from-green-500 to-teal-600 rounded-md py-4 px-5 relative z-10 overflow-hidden shadow-lg shadow-black/40 w-full flex flex-col justify-between items-start">
-    <img src={~p"/images/sauna_heat_lines.svg"} class="h-28 w-28 absolute -z-10 opacity-80 right-1 top-4" />
+    <img src={~p"/images/sauna_heat_lines.svg"} class="h-24 w-24 absolute -z-10 opacity-80 right-1 top-4" />
 
     <div>
     <p class="text-green-800 font-semibold">Sauna pass</p>
@@ -96,6 +101,21 @@ defmodule KriteWeb.KvegHTML do
       <.icon name="hero-chevron-right" class="h-6 w-6"/>
     </a>
     """
+  end
+
+  defp format_event_date(date_start, date_end) do
+    start = Calendar.strftime(date_start, "%B %-d")
+
+    cond do
+      date_start.month != date_end.month ->
+        start <> " - " <> Calendar.strftime(date_end, "%B %-d")
+
+      date_start.day != date_end.day ->
+        start <> " - #{date_end.day}"
+
+      true ->
+        start
+    end
   end
 
   defp format_expire_date(date) do

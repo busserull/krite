@@ -42,7 +42,7 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
   [ ] Add an `incountable` field or similar it `items`.
   [ ] Add a quick purchase link for single day on the sauna card.
   [ ] Add a quick purchase link for semester on the sauna card.
-[ ] Refactor action elements.
+[x] Refactor action elements.
 [ ] Add bar code scanning to devices that support it.
-[ ] Create a header where login information can be placed.
+[x] Create a header where login information can be placed.
 [ ] Send dummy email with password reset links.

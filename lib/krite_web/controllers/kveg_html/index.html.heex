@@ -12,7 +12,7 @@
 </.title>
 
 <section class="flex flex-col sm:flex-row justify-between items-stretch gap-6">
-  <.balance_card balance={@kveg.balance - 200} />
+  <.balance_card balance={@kveg.balance + 200} />
   <.sauna_card pass_end={@kveg.sauna_pass_end} />
 </section>
 
@@ -26,17 +26,69 @@
   </.action>
 </section>
 
-<.split>Upcoming trips</.split>
+<.split>Upcoming events</.split>
+<section class="flex flex-row justify-between gap-6">
+  <ul class="w-full">
+    <li
+      :for={
+        event <-
+          Enum.sort(
+            [
+              %{
+                name: "Trip to Ålesund",
+                date_start: ~N[2025-03-13 00:00:00],
+                date_end: ~N[2025-03-16 23:59:59]
+              },
+              %{
+                name: "DG Cup",
+                date_start: ~N[2025-02-15 00:00:00],
+                date_end: ~N[2025-02-15 23:59:59]
+              },
+              %{
+                name: "ICC",
+                date_start: ~N[2025-03-20 00:00:00],
+                date_end: ~N[2025-03-24 00:00:00]
+              }
+            ],
+            &NaiveDateTime.before?(&1.date_start, &2.date_start)
+          )
+      }
+      class="flex frex-row justify-between gap-6 px-2 py-4 border-b border-stone-300 last-of-type:border-none"
+    >
+      <div>
+        <p class="text-2xl font-semibold text-blue-600 mb-1">
+          <%= event.name %>
+        </p>
+        <p class="uppercase font-semibold text-stone-600">
+          <%= format_event_date(event.date_start, event.date_end) %>
+        </p>
+      </div>
+
+      <div class="flex flex-col justify-center">
+        <.link
+          href={~p"/"}
+          class="bg-blue-600 text-white hover:bg-blue-500 px-5 py-3 rounded-md text-lg font-semibold leading-6 hover:cursor-pointer transition-colors"
+        >
+          More info and signup
+        </.link>
+      </div>
+    </li>
+  </ul>
+</section>
 
 <section class="flex flex-row gap-4 justify-end my-4"></section>
 
-<.split class="mt-24">Or</.split>
+<.split class="mt-24">Other things you can do</.split>
 
-<ul class="grid grid-cols-1 sm:grid-cols-2 grid-flow-row gap-x-12 w-5/6 mx-auto text-lg text-blue-800 hover:cursor-pointer underline underline-offset-4">
-  <li>View your purchasing history</li>
-  <li>Change your account details</li>
-  <li>Play a game of Rose</li>
-  <li>See Dypet statistics</li>
+<ul class="grid grid-cols-1 sm:grid-cols-2 grid-flow-row gap-x-12 gap-y-6 w-5/6 mx-auto text-lg text-blue-800 hover:cursor-pointer underline underline-offset-4">
+  <li class="text-center">
+    <.icon name="hero-wallet-solid" />View transaction history
+  </li>
+  <li class="text-center"><.icon name="hero-heart-solid" />Play a game of Rose</li>
+  <li class="text-center"><.icon name="hero-chart-bar-solid" />See Dypet statistics</li>
+  <li class="text-center">
+    <.icon name="hero-chat-bubble-bottom-center-text-solid" />Tell us something
+  </li>
 </ul>
 <!-- <.split class="mt-24">Debug</.split> -->
 <!-- <pre> -->
