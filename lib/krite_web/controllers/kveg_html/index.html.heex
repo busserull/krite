@@ -1,18 +1,11 @@
-<.title :if={false}>
-  <%= @kveg.firstname %> <%= @kveg.lastname %>
+<pre>
+<%= inspect @kveg, pretty: true %>
+</pre>
 
-  <:side>
-    <div class="border border-teal-500 rounded-md py-2 bg-teal-100 text-teal-500 flex flex-row justify-between items-center px-4">
-      <.icon name="hero-check-circle-solid" class="mr-2" />
-      <div class="font-semibold">
-        Sauna pass valid
-      </div>
-    </div>
-  </:side>
-</.title>
+<div class="h-[400px]"></div>
 
 <section class="flex flex-col sm:flex-row justify-between items-stretch gap-6">
-  <.balance_card balance={@kveg.balance + 200} />
+  <.balance_card balance={@kveg.balance} />
   <.sauna_card pass_end={@kveg.sauna_pass_end} />
 </section>
 
@@ -80,14 +73,24 @@
 
 <.split class="mt-24">Other things you can do</.split>
 
-<ul class="grid grid-cols-1 sm:grid-cols-2 grid-flow-row gap-x-12 gap-y-6 w-5/6 mx-auto text-lg text-blue-800 hover:cursor-pointer underline underline-offset-4">
-  <li class="text-center">
-    <.icon name="hero-wallet-solid" />View transaction history
-  </li>
-  <li class="text-center"><.icon name="hero-heart-solid" />Play a game of Rose</li>
-  <li class="text-center"><.icon name="hero-chart-bar-solid" />See Dypet statistics</li>
-  <li class="text-center">
-    <.icon name="hero-chat-bubble-bottom-center-text-solid" />Tell us something
+<ul class="grid grid-cols-1 sm:grid-cols-2 grid-flow-row gap-x-12 gap-y-6 w-5/6 mx-auto">
+  <li
+    :for={
+      {icon, name, link} <- [
+        {"wallet", "View transaction history", "/kveg/transactions"},
+        {"heart", "Play a game of Rose", "/"},
+        {"chart-bar", "See Dypet statistics", "/"},
+        {"chat-bubble-bottom-center-text", "Tell us something", "/"}
+      ]
+    }
+    class="text-blue-800 hover:text-blue-500 hover:cursor-pointer transition-colors text-lg"
+  >
+    <.link href={link} class="flex flex-row gap-2 items-center">
+      <.icon name={"hero-#{icon}-solid"} />
+      <p class="underline underline-offset-4">
+        <%= name %>
+      </p>
+    </.link>
   </li>
 </ul>
 <!-- <.split class="mt-24">Debug</.split> -->

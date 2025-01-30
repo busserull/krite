@@ -46,3 +46,5 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 [ ] Add bar code scanning to devices that support it.
 [x] Create a header where login information can be placed.
 [ ] Send dummy email with password reset links.
+[x] Load actual kveg transactions when showing their home screen.
+[ ] Add a route to show kveg transaction history.

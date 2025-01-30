@@ -55,6 +55,7 @@ defmodule KriteWeb.Router do
     post "/sauna-pass-unremind", KvegController, :sauna_pass_unremind
 
     live "/shop", ShopLive
+    live "/transactions", TransactionsLive
 
     get "/history", KvegController, :history
   end

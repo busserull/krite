@@ -1,0 +1,17 @@
+<.take_me_back to={~p"/kveg"} />
+
+<ul>
+  <li :for={
+    transaction <-
+      Enum.sort(
+        @kveg.deposits ++ @kveg.purchases,
+        &NaiveDateTime.before?(&2.inserted_at, &1.inserted_at)
+      )
+  }>
+    <%= inspect(transaction.inserted_at) %>
+  </li>
+</ul>
+
+<pre>
+  <%= inspect @kveg, pretty: true %>
+  </pre>

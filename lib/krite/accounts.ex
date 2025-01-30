@@ -50,7 +50,30 @@ defmodule Krite.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_kveg!(id), do: Repo.get!(Kveg, id) |> Map.put(:balance, 100)
+  def get_kveg!(id), do: Repo.get!(Kveg, id)
+
+  def load_kveg_balance(%Kveg{} = kveg) do
+    kveg =
+      kveg
+      |> Repo.preload([:deposits, purchases: [:items]])
+      |> Map.update!(:purchases, &calculate_purchase_totals/1)
+
+    deposits =
+      kveg.deposits
+      |> Enum.map(&Map.fetch!(&1, :amount))
+      |> Enum.sum()
+
+    spending =
+      kveg.purchases
+      |> Enum.map(&Map.fetch!(&1, :total_cost))
+      |> Enum.sum()
+
+    Map.put(kveg, :balance, deposits - spending)
+  end
+
+  def load_kveg_transactions(%Kveg{} = kveg) do
+    Repo.preload(kveg, [:deposits, purchases: [items: [:item]]])
+  end
 
   @doc """
   Get a single kveg by email and password, returning nil if no such kveg exists.
@@ -210,31 +233,16 @@ defmodule Krite.Accounts do
     Kveg.changeset(kveg, attrs)
   end
 
-  defp calculate_and_put_balance(kveg) do
-    kveg =
-      kveg
-      |> Repo.preload([:deposits, purchases: [:items]])
-      |> Map.update!(:purchases, &calculate_all_purchase_totals/1)
-
-    deposits =
-      kveg.deposits
-      |> Enum.map(&Map.fetch!(&1, :amount))
-      |> Enum.sum()
-
-    spending =
-      kveg.purchases
-      |> Enum.map(&Map.fetch!(&1, :total_cost))
-      |> Enum.sum()
-
-    Map.put(kveg, :balance, deposits - spending)
-  end
-
-  defp calculate_all_purchase_totals(purchases) do
+  defp calculate_purchase_totals(purchases) when is_list(purchases) do
     Enum.map(purchases, &calculate_purchase_total/1)
   end
 
   defp calculate_purchase_total(%Purchase{items: items} = purchase) do
-    total_cost = Enum.reduce(items, 0, fn i, acc -> acc + i.count * i.unit_price_at_purchase end)
+    total_cost =
+      Enum.reduce(items, 0, fn item, acc ->
+        acc + item.count * item.unit_price_at_purchase
+      end)
+
     Map.put(purchase, :total_cost, total_cost)
   end
 end
