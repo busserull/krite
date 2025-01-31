@@ -48,3 +48,6 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 [ ] Send dummy email with password reset links.
 [x] Load actual kveg transactions when showing their home screen.
 [x] Add a route to show kveg transaction history.
+[ ] Add functionality for submitting feedback.
+  [ ] Add schema for feedback lines.
+  [ ] Actually make them visible somewhere.
