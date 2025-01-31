@@ -72,7 +72,9 @@ defmodule Krite.Accounts do
   end
 
   def load_kveg_transactions(%Kveg{} = kveg) do
-    Repo.preload(kveg, [:deposits, purchases: [items: [:item]]])
+    kveg
+    |> Repo.preload([:deposits, purchases: [items: [:item]]])
+    |> Map.update!(:purchases, &calculate_purchase_totals/1)
   end
 
   @doc """
