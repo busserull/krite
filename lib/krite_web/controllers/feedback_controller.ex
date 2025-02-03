@@ -14,16 +14,20 @@ defmodule KriteWeb.FeedbackController do
     render(conn, :new, changeset: changeset)
   end
 
-  def create(conn, %{"message" => message_params}) do
-    case Feedback.create_message(message_params) do
-      {:ok, message} ->
-        conn
-        |> put_flash(:info, "Message created successfully.")
-        |> redirect(to: ~p"/messages/#{message}")
+  def create(conn, params) do
+    IO.puts(inspect(params, pretty: true))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :new, changeset: changeset)
-    end
+    # case Feedback.create_message(message_params) do
+    #   {:ok, message} ->
+    #     conn
+    #     |> put_flash(:info, "Message created successfully.")
+    #     |> redirect(to: ~p"/messages/#{message}")
+
+    #   {:error, %Ecto.Changeset{} = changeset} ->
+    #     render(conn, :new, changeset: changeset)
+    # end
+
+    render(conn, :new, changeset: Feedback.change_message(%Message{}))
   end
 
   def show(conn, %{"id" => id}) do

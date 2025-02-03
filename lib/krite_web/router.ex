@@ -57,6 +57,8 @@ defmodule KriteWeb.Router do
     live "/shop", ShopLive
     live "/transactions", TransactionsLive
 
+    resources "/feedback", FeedbackController, only: [:new, :create]
+
     get "/history", KvegController, :history
   end
 
