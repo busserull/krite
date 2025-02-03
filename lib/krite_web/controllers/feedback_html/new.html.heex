@@ -1,0 +1,8 @@
+<.header>
+  New Message
+  <:subtitle>Use this form to manage message records in your database.</:subtitle>
+</.header>
+
+<.message_form changeset={@changeset} action={~p"/messages"} />
+
+<.back navigate={~p"/messages"}>Back to messages</.back>
