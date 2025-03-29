@@ -4,14 +4,15 @@ defmodule Krite.Products.Item do
   alias Krite.Products.Stock
   alias Krite.Products.Barcode
   alias Krite.Purchases.PurchaseItem
+  alias Krite.Organization
 
   schema "items" do
     field :active, :boolean, default: true
     field :name, :string
     field :price, :integer
 
+    belongs_to :owner, Organization
     has_many :barcodes, Barcode
-
     has_many :purchases, PurchaseItem
     has_many :stocks, Stock
 
