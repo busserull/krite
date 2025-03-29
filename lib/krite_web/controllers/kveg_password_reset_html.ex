@@ -1,9 +1,9 @@
 defmodule KriteWeb.KvegPasswordResetHTML do
   use KriteWeb, :html
 
-  embed_templates "kveg_password_reset_html/*"
+  embed_templates("kveg_password_reset_html/*")
 
-  attr :message, :any, required: true
+  attr(:message, :any, required: true)
 
   def stop_message(assigns) do
     ~H"""
@@ -24,7 +24,7 @@ defmodule KriteWeb.KvegPasswordResetHTML do
   def back_to_login(assigns) do
     ~H"""
     <div class="mt-4">
-      <.href to={~p"/log-in"}>
+      <.href to={~p"/"}>
         Back to login
       </.href>
     </div>
