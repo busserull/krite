@@ -1,9 +1,3 @@
-<pre>
-<%= inspect @kveg, pretty: true %>
-</pre>
-
-<div class="h-[400px]"></div>
-
 <section class="flex flex-col sm:flex-row justify-between items-stretch gap-6">
   <.balance_card balance={@kveg.balance} />
   <.sauna_card pass_end={@kveg.sauna_pass_end} />
@@ -50,10 +44,10 @@
     >
       <div>
         <p class="text-2xl font-semibold text-blue-600 mb-1">
-          <%= event.name %>
+          {event.name}
         </p>
         <p class="uppercase font-semibold text-stone-600">
-          <%= format_event_date(event.date_start, event.date_end) %>
+          {format_event_date(event.date_start, event.date_end)}
         </p>
       </div>
 
@@ -77,23 +71,28 @@
   <li
     :for={
       {icon, name, link} <- [
-        {"wallet", "View transaction history", "/kveg/transactions"},
-        {"heart", "Play a game of Rose", "/"},
-        {"chart-bar", "See Dypet statistics", "/"},
-        {"chat-bubble-bottom-center-text", "Tell us something", "/kveg/feedback/new"}
+        {"hero-wallet-solid", "View transaction history", "/kveg/transactions"},
+        {"hero-heart-solid", "Play a game of Rose", "/"},
+        {"hero-chart-bar-solid", "See Dypet statistics", "/"},
+        {"hero-chat-bubble-bottom-center-text-solid", "Tell us something", "/kveg/feedback/new"}
       ]
     }
     class="text-blue-800 hover:text-blue-500 hover:cursor-pointer transition-colors text-lg"
   >
     <.link href={link} class="flex flex-row gap-2 items-center">
-      <.icon name={"hero-#{icon}-solid"} />
+      <.icon name={icon} />
       <p class="underline underline-offset-4">
-        <%= name %>
+        {name}
       </p>
     </.link>
   </li>
 </ul>
 <!-- <.split class="mt-24">Debug</.split> -->
 <!-- <pre> -->
-<!-- <%= inspect(@kveg, pretty: true) %> -->
+<!-- {inspect(@kveg, pretty: true)} -->
 <!-- </pre> -->
+<pre>
+<%= inspect @kveg, pretty: true %>
+</pre>
+
+<div class="h-[400px]"></div>
