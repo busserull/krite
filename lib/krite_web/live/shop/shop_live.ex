@@ -42,6 +42,13 @@ defmodule KriteWeb.ShopLive do
     {:ok, socket}
   end
 
+  def handle_event("nop", _params, socket) do
+    # This is a placeholder event for "add-first-item".
+    # Figure out a way to unfocus the input bar when the item is added,
+    # so that it doesn't remain open after the cart is updated.
+    {:noreply, socket}
+  end
+
   def handle_event("search", %{"search" => ""}, socket) do
     socket =
       socket
@@ -63,49 +70,15 @@ defmodule KriteWeb.ShopLive do
   end
 
   def handle_event("add-first-item", _params, socket) do
-    {:noreply, socket}
+    {:noreply, add_item(socket, List.first(socket.assigns.search_list))}
   end
 
   def handle_event("add-item", %{"item-id" => id}, socket) do
-    item = get_item(socket, id)
-
-    old_cart = socket.assigns.cart
-
-    cart =
-      case Enum.find_index(old_cart, fn {i, _count} -> i.id == item.id end) do
-        nil -> [{item, 1} | old_cart]
-        index -> List.update_at(old_cart, index, fn {i, count} -> {i, count + 1} end)
-      end
-
-    socket =
-      socket
-      |> assign(:cart, cart)
-      |> assign(:search, "")
-      |> update_search_list()
-      |> update(:total, &(&1 + item.price))
-
-    {:noreply, socket}
+    {:noreply, add_item(socket, id)}
   end
 
   def handle_event("sub-item", %{"item-id" => id}, socket) do
-    item = get_item(socket, id)
-
-    old_cart = socket.assigns.cart
-
-    item_index = Enum.find_index(old_cart, fn {i, _count} -> i.id == item.id end)
-
-    cart =
-      case Enum.at(old_cart, item_index) do
-        {_item, 1} -> List.delete_at(old_cart, item_index)
-        {item, count} -> List.update_at(old_cart, item_index, fn _ -> {item, count - 1} end)
-      end
-
-    socket =
-      socket
-      |> assign(:cart, cart)
-      |> update(:total, &(&1 - item.price))
-
-    {:noreply, socket}
+    {:noreply, sub_item(socket, id)}
   end
 
   def handle_event("checkout", _params, socket) do
@@ -128,24 +101,64 @@ defmodule KriteWeb.ShopLive do
     {:noreply, socket}
   end
 
-  def handle_event("hide-flash", _params, socket) do
-    hide_flash(socket)
-  end
+  def handle_event("hide-flash", _params, socket), do: hide_flash(socket)
 
-  def handle_info(:hide_flash, socket) do
-    hide_flash(socket)
-  end
+  def handle_info(:hide_flash, socket), do: hide_flash(socket)
 
   defp hide_flash(socket) do
     :timer.cancel(socket.assigns.flash_timeout)
     {:noreply, assign(socket, flash_success: false, flash_timeout: nil)}
   end
 
-  defp get_item(socket, item_id) do
+  defp get_item(socket, item_id) when is_binary(item_id) do
     case Integer.parse(item_id) do
-      {id, ""} -> Enum.find(socket.assigns.catalog, &(&1.id == id))
+      {id, ""} -> get_item(socket, id)
       _ -> nil
     end
+  end
+
+  defp get_item(socket, item_id) do
+    Enum.find(socket.assigns.catalog, &(&1.id == item_id))
+  end
+
+  defp add_item(socket, nil), do: socket
+
+  defp add_item(socket, {item_id, _text, _price}), do: add_item(socket, item_id)
+
+  defp add_item(socket, item_id) do
+    item = get_item(socket, item_id)
+
+    old_cart = socket.assigns.cart
+
+    cart =
+      case Enum.find_index(old_cart, fn {i, _count} -> i.id == item.id end) do
+        nil -> [{item, 1} | old_cart]
+        index -> List.update_at(old_cart, index, fn {i, count} -> {i, count + 1} end)
+      end
+
+    socket
+    |> assign(:cart, cart)
+    |> assign(:search, "")
+    |> update_search_list()
+    |> update(:total, &(&1 + item.price))
+  end
+
+  defp sub_item(socket, item_id) do
+    item = get_item(socket, item_id)
+
+    old_cart = socket.assigns.cart
+
+    item_index = Enum.find_index(old_cart, fn {i, _count} -> i.id == item.id end)
+
+    cart =
+      case Enum.at(old_cart, item_index) do
+        {_item, 1} -> List.delete_at(old_cart, item_index)
+        {item, count} -> List.update_at(old_cart, item_index, fn _ -> {item, count - 1} end)
+      end
+
+    socket
+    |> assign(:cart, cart)
+    |> update(:total, &(&1 - item.price))
   end
 
   defp update_search_list(socket) do

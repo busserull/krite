@@ -4,7 +4,7 @@
 <.take_me_back to={~p"/kveg"} />
 
 <div class="z-20 relative">
-  <form phx-change="search" phx-submit="add-first-item">
+  <form phx-change="search" phx-submit="nop">
     <.input
       phx-focus={
         JS.show(
@@ -16,7 +16,7 @@
           transition: {"ease duration-200", "scale-y-0 opacity-0", "scale-y-100 opacity-100"}
         )
       }
-      phx-blur={
+      phx-click-away={
         JS.hide(
           to: "#SearchBackdrop",
           transition: {"ease duration-200", "opacity-100", "opacity-0"}
