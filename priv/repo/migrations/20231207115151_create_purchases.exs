@@ -3,7 +3,7 @@ defmodule Krite.Repo.Migrations.CreatePurchases do
 
   def change do
     create table(:purchases) do
-      add :kveg_id, references(:kveg, on_delete: :nothing)
+      add :kveg_id, references(:kveg, on_delete: :nothing), null: false
 
       timestamps(type: :utc_datetime)
     end

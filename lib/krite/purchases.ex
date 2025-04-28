@@ -53,6 +53,7 @@ defmodule Krite.Purchases do
     items =
       Enum.map(cart, fn {item, count} ->
         PurchaseItem.changeset(%PurchaseItem{}, %{
+          item_id: item.id,
           unit_price_at_purchase: item.price,
           count: count
         })

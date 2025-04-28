@@ -14,8 +14,8 @@ defmodule Krite.Purchases.PurchaseItem do
   @doc false
   def changeset(purchase_item, attrs) do
     purchase_item
-    |> cast(attrs, [:unit_price_at_purchase, :count])
-    |> validate_required([:unit_price_at_purchase, :count])
+    |> cast(attrs, [:unit_price_at_purchase, :count, :item_id])
+    |> validate_required([:unit_price_at_purchase, :count, :item_id])
     |> validate_number(:unit_price_at_purchase, greater_than_or_equal_to: 0)
     |> validate_number(:count, greater_than: 0)
   end
