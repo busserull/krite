@@ -60,3 +60,5 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 [ ] She wants to see her balance update.
 [ ] Finally, she would like to view her purchasing history.
 [ ] This has to look and feel good on mobile and computer.
+
+[ ] Bob
